@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Dmitry Kotlyarov.
+ * Copyright (C) 2016 Dmitry Kotlyarov.
  * All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
