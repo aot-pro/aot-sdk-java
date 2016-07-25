@@ -49,19 +49,19 @@ public abstract class Storage {
 
     public abstract Storage substorage(String prefix);
 
-    public abstract Iterable<String> findKeys(String prefix);
-    public abstract Iterable<String> findKeys(String prefix, String filter);
-    public abstract Iterable<String> findKeys(String prefix, Pattern filter);
+    public abstract Iterable<String> find(String prefix);
+    public abstract Iterable<String> find(String prefix, String filter);
+    public abstract Iterable<String> find(String prefix, Pattern filter);
 
-    public abstract byte[] getObject(String key);
-    public abstract void putObject(String key, byte[] data);
-    public abstract void deleteObject(String key);
+    public abstract byte[] get(String key);
+    public abstract void put(String key, byte[] data);
+    public abstract void delete(String key);
 
-    public abstract String publishObject(String key);
-    public abstract void hideObject(String key);
-    public abstract String objectUrl(String key);
+    public abstract String publish(String key);
+    public abstract void hide(String key);
+    public abstract String url(String key);
 
-    public static Storage create(String id) {
+    public static Storage createStorage(String id) {
         try {
             String[] ids = id.split("|");
             URL url = new URL(ids[0]);
@@ -72,10 +72,10 @@ public abstract class Storage {
         }
     }
 
-    public static Storage get(String id) {
+    public static Storage getStorage(String id) {
         Holder holder = storages.get(id);
         if (holder == null) {
-            holder = MapUtil.putIfAbsent(storages, id, new Holder(id, create(id)));
+            holder = MapUtil.putIfAbsent(storages, id, new Holder(id, createStorage(id)));
         }
         return holder.getStorage();
     }

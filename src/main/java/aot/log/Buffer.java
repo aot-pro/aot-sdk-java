@@ -117,7 +117,7 @@ final class Buffer {
                 String key = String.format("%d/%d/%d/%d/%d/%d-%d-%d_%d:%d:%d.%d",
                                            year, month, day, hour, minute,
                                            year, month, day, hour, minute, second, millisecond);
-                storage.putObject(key, IOUtil.compress(data.array(), 0, 24 + sz));
+                storage.put(key, IOUtil.compress(data.array(), 0, 24 + sz));
                 size.set(0);
                 offset.set(24);
                 begin = System.currentTimeMillis();
