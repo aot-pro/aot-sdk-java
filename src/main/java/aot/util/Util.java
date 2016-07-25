@@ -19,6 +19,8 @@ package aot.util;
 
 import java.nio.charset.Charset;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Dmitry Kotlyarov
@@ -27,14 +29,44 @@ import java.util.UUID;
 public final class Util {
     public static final Charset CHARSET = Charset.forName("UTF-8");
 
+    private static final Object sleep = new Object();
+    private static final AtomicLong threads = new AtomicLong(0);
+    private static final AtomicBoolean shutdown = new AtomicBoolean(false);
+
     private Util() {
     }
 
-    public static void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+            }
+        });
+    }
+
+    public static void addThread() {
+        threads.incrementAndGet();
+    }
+
+    public static void removeThread() {
+        threads.decrementAndGet();
+    }
+
+    public static void sleep(long timeout) {
+        if (!shutdown.get()) {
+            synchronized (sleep) {
+                try {
+                    sleep.wait(timeout);
+                } catch (InterruptedException e) {
+                    if (!shutdown.get()) {
+                        throw new InterruptedRuntimeException(e);
+                    } else {
+                        throw new ShutdownException(e);
+                    }
+                }
+            }
+        } else {
+            throw new ShutdownException();
         }
     }
 
