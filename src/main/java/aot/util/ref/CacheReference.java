@@ -18,6 +18,8 @@
 package aot.util.ref;
 
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -27,6 +29,8 @@ import java.util.concurrent.atomic.AtomicLong;
 public class CacheReference<T> implements Serializable {
     private static final long serialVersionUID = 1;
 
+    protected static final ConcurrentLinkedQueue<WeakReference<CacheReference>> references = new ConcurrentLinkedQueue<>();
+
     protected final T referent;
     protected final long span;
     protected final AtomicLong access;
@@ -35,6 +39,8 @@ public class CacheReference<T> implements Serializable {
         this.referent = referent;
         this.span = span;
         this.access = new AtomicLong(System.currentTimeMillis());
+
+        references.add(new WeakReference<CacheReference>(this));
     }
 
     public T getReferent() {
