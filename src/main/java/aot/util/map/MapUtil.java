@@ -17,6 +17,9 @@
 
 package aot.util.map;
 
+import aot.util.NotFoundException;
+
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -25,6 +28,15 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class MapUtil {
     private MapUtil() {
+    }
+
+    public static <K, V> V get(Map<K, V> map, K key) {
+        V value = map.get(key);
+        if (value != null) {
+            return value;
+        } else {
+            throw new NotFoundException(String.format("Entry with key '%s' is not found", key));
+        }
     }
 
     public static <K, V> V putIfAbsent(ConcurrentMap<K, V> map, K key, V value) {
