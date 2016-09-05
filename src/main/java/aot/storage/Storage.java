@@ -17,6 +17,8 @@
 
 package aot.storage;
 
+import aot.util.cbor.CborUtil;
+import aot.util.json.JsonUtil;
 import aot.util.map.MapUtil;
 
 import java.net.URL;
@@ -60,6 +62,18 @@ public abstract class Storage {
     public abstract String publish(String key);
     public abstract void hide(String key);
     public abstract String url(String key);
+
+    public <T> T getCbor(String key, Class<T> type) {
+        return CborUtil.fromBytes(get(key), type);
+    }
+
+    public <T> T getJson(String key, Class<T> type) {
+        return JsonUtil.fromBytes(get(key), type);
+    }
+
+    public <T> T getXml(String key, Class<T> type) {
+        return null;
+    }
 
     public static Storage createStorage(String id) {
         try {
