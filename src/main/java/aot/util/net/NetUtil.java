@@ -18,6 +18,7 @@
 package aot.util.net;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 
 /**
@@ -28,10 +29,46 @@ public final class NetUtil {
     private NetUtil() {
     }
 
-    public static String getIp(String host) {
+    public static String getLocalIp() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getHostIp(String host) {
         try {
             return InetAddress.getByName(host).getHostAddress();
         } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getLocalMac() {
+        try {
+            NetworkInterface network = NetworkInterface.getByInetAddress(InetAddress.getLocalHost());
+            byte[] mac = network.getHardwareAddress();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0, ci = mac.length; i < ci; i++) {
+                sb.append(String.format("%02X%s", mac[i], (i < ci - 1) ? "-" : ""));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getHostMac(String host) {
+        try {
+            NetworkInterface network = NetworkInterface.getByInetAddress(InetAddress.getByName(host));
+            byte[] mac = network.getHardwareAddress();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0, ci = mac.length; i < ci; i++) {
+                sb.append(String.format("%02X%s", mac[i], (i < ci - 1) ? "-" : ""));
+            }
+            return sb.toString();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
