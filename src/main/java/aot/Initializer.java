@@ -18,16 +18,8 @@
 package aot;
 
 import aot.storage.Storage;
+import aot.util.manifest.ManifestUtil;
 import aot.util.net.NetUtil;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 
 /**
  * @author Dmitry Kotlyarov
@@ -35,28 +27,6 @@ import java.util.jar.Manifest;
  */
 public class Initializer {
     public Initializer() {
-    }
-
-    public Map<String, String> getAttributes() {
-        try {
-            LinkedHashMap<String, String> attributes = new LinkedHashMap<>(256);
-            Enumeration<URL> resources = getClass().getClassLoader().getResources("META-INF/MANIFEST.MF");
-            while (resources.hasMoreElements()) {
-                try (InputStream in = resources.nextElement().openStream()) {
-                    Manifest manifest = new Manifest(in);
-                    for (Map.Entry<Object, Object> attr : manifest.getMainAttributes().entrySet()) {
-                        Object key = attr.getKey();
-                        Object value = attr.getValue();
-                        if (key instanceof Attributes.Name && value instanceof String) {
-                            attributes.put(key.toString(), value.toString());
-                        }
-                    }
-                }
-            }
-            return attributes;
-        } catch (IOException e) {
-            throw new InitializerException(e);
-        }
     }
 
     public Config getBaseConfig() {
@@ -77,6 +47,14 @@ public class Initializer {
 
     public Storage getDataRemoteStorage() {
         return null;
+    }
+
+    public String getApplication() {
+        return ManifestUtil.getAttribute("Application");
+    }
+
+    public String getVersion() {
+        return ManifestUtil.getAttribute("Version");
     }
 
     public String getInstance() {

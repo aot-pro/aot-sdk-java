@@ -19,10 +19,7 @@ package aot;
 
 import aot.storage.Storage;
 import aot.util.NotFoundException;
-import aot.util.map.MapUtil;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -30,7 +27,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 1.0
  */
 public final class Root {
-    private static final Map<String, String> attributes;
     private static final Config baseConfig;
     private static final Storage configLocalStorage;
     private static final Storage configRemoteStorage;
@@ -56,14 +52,13 @@ public final class Root {
         } catch (ClassNotFoundException e) {
             initializer = new Initializer();
         }
-        attributes = Collections.unmodifiableMap(initializer.getAttributes());
         baseConfig = initializer.getBaseConfig();
         configLocalStorage = initializer.getConfigLocalStorage();
         configRemoteStorage = initializer.getConfigRemoteStorage();
         dataLocalStorage = initializer.getDataLocalStorage();
         dataRemoteStorage = initializer.getDataRemoteStorage();
-        application = MapUtil.get(attributes, "Application");
-        version = MapUtil.get(attributes, "Version");
+        application = initializer.getApplication();
+        version = initializer.getVersion();
         instance = initializer.getInstance();
         config = new AtomicReference<>(null);
         if (configLocalStorage == null) {
@@ -148,10 +143,6 @@ public final class Root {
             }
         };
         t.start();
-    }
-
-    public static Map<String, String> getAttributes() {
-        return attributes;
     }
 
     public static Config getBaseConfig() {
