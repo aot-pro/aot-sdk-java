@@ -47,7 +47,7 @@ public final class Root {
             try {
                 initializer = (Initializer) clazz.newInstance();
             } catch (Exception e) {
-                throw new InitializerException(e);
+                throw new RuntimeException(e);
             }
         } catch (ClassNotFoundException e) {
             initializer = new Initializer();
