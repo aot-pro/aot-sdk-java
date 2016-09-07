@@ -24,6 +24,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Dmitry Kotlyarov
@@ -62,6 +64,28 @@ public class Config implements Serializable, Binariable {
 
     public static class Log implements Serializable {
         private static final long serialVersionUID = 1;
+
+        public final List<Layer> layers;
+
+        public Log(@JsonProperty(value="layers", required=false) List<Layer> layers) {
+            this.layers = Collections.unmodifiableList(layers);
+        }
+
+        public static class Layer implements Serializable {
+            private static final long serialVersionUID = 1;
+
+            public final String id;
+            public final boolean enabled;
+            public final int size;
+
+            public Layer(@JsonProperty(value="id", required=true) String id,
+                         @JsonProperty(value="enabled", required=true) boolean enabled,
+                         @JsonProperty(value="size", required=false, defaultValue="1048576") int size) {
+                this.id = id;
+                this.enabled = enabled;
+                this.size = size;
+            }
+        }
     }
 
     public static class Stat implements Serializable {
