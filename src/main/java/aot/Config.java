@@ -76,13 +76,16 @@ public class Config implements Serializable, Binariable {
 
             public final String id;
             public final boolean enabled;
+            public final int span;
             public final int size;
 
             public Layer(@JsonProperty(value="id", required=true) String id,
                          @JsonProperty(value="enabled", required=true) boolean enabled,
-                         @JsonProperty(value="size", required=false, defaultValue="1048576") int size) {
+                         @JsonProperty(value="span", required=false, defaultValue="1") int span,
+                         @JsonProperty(value="size", required=false, defaultValue="1024") int size) {
                 this.id = id;
                 this.enabled = enabled;
+                this.span = span;
                 this.size = size;
             }
         }
