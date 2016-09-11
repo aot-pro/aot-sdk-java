@@ -17,15 +17,19 @@
 
 package aot.log;
 
+import aot.Config;
+
 import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
 public final class Log {
-    private static final ConcurrentHashMap<String, Layer> levels = new ConcurrentHashMap<>(64);
+    private static Config config;
+    private static final AtomicReference<Layer[]> layers = new AtomicReference<>(new Layer[0]);
     private static final ThreadLocal<LinkedHashMap<String, String>> tags = new ThreadLocal<LinkedHashMap<String, String>>() {
         @Override
         protected LinkedHashMap<String, String> initialValue() {

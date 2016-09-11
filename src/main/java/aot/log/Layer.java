@@ -31,9 +31,9 @@ final class Layer {
     private final AtomicBoolean bufferFlag = new AtomicBoolean(true);
     private final AtomicLong lost = new AtomicLong(0);
 
-    public Layer(String id, int capacity) {
+    public Layer(String id, int size) {
         this.id = id;
-        this.buffer1 = new Buffer(capacity, null);
-        this.buffer2 = new Buffer(capacity, null);
+        this.buffer1 = new Buffer(size, null);
+        this.buffer2 = new Buffer(size, null);
     }
 }

@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 final class Buffer {
     private final AtomicInteger offset = new AtomicInteger(24);
-    private final int capacity;
+    private final int size;
     private final ByteBuffer buffer;
     private final Storage storage;
     private long begin;
@@ -44,9 +44,9 @@ final class Buffer {
         }
     };
 
-    public Buffer(int capacity, Storage storage) {
-        this.capacity = capacity;
-        this.buffer = ByteBuffer.allocate(capacity);
+    public Buffer(int size, Storage storage) {
+        this.size = size;
+        this.buffer = ByteBuffer.allocate(size);
         this.storage = storage;
         this.begin = System.currentTimeMillis();
     }
@@ -62,7 +62,7 @@ final class Buffer {
     private int putBytes(byte type, byte[] bytes) {
         int l = bytes.length + 5;
         int o = offset.getAndAdd(l);
-        if (o + l <= capacity) {
+        if (o + l <= size) {
             buffer.put(o, type);
             buffer.putInt(o + 1, bytes.length);
             System.arraycopy(bytes, 0, buffer.array(), o + 5, bytes.length);
