@@ -39,21 +39,21 @@ public final class ManifestUtil {
     private ManifestUtil() {
     }
 
-    public static String findAttribute(String name) {
-        return attributes.get(name);
+    public static String findAttribute(String key) {
+        return attributes.get(key);
     }
 
-    public static String getAttribute(String name) {
-        String v = findAttribute(name);
+    public static String getAttribute(String key) {
+        String v = findAttribute(key);
         if (v != null) {
             return v;
         } else {
-            throw new NotFoundException(String.format("Attribute with name '%s' is not found", name));
+            throw new NotFoundException(String.format("Attribute with key '%s' is not found", key));
         }
     }
 
-    public static String getAttribute(String name, String value) {
-        String v = findAttribute(name);
+    public static String getAttribute(String key, String value) {
+        String v = findAttribute(key);
         if (v != null) {
             return v;
         } else {
