@@ -29,7 +29,7 @@ import java.io.Serializable;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-class LogEventRaw implements Serializable, Binariable {
+class EventRaw implements Serializable, Binariable {
     private static final long serialVersionUID = 1;
 
     public final long time;
@@ -39,11 +39,11 @@ class LogEventRaw implements Serializable, Binariable {
     public final int tags;
 
     @JsonCreator
-    public LogEventRaw(@JsonProperty("time") long time,
-                       @JsonProperty("level") int level,
-                       @JsonProperty("logger") int logger,
-                       @JsonProperty("message") String message,
-                       @JsonProperty("tags") int tags) {
+    public EventRaw(@JsonProperty("time") long time,
+                    @JsonProperty("level") int level,
+                    @JsonProperty("logger") int logger,
+                    @JsonProperty("message") String message,
+                    @JsonProperty("tags") int tags) {
         this.time = time;
         this.level = level;
         this.logger = logger;
@@ -51,8 +51,8 @@ class LogEventRaw implements Serializable, Binariable {
         this.tags = tags;
     }
 
-    public LogEvent toEvent(LogStream stream) {
-        return new LogEvent(time,
+    public Event toEvent(Stream stream) {
+        return new Event(time,
                             stream.getString(level),
                             stream.getString(logger),
                             message,
@@ -69,11 +69,11 @@ class LogEventRaw implements Serializable, Binariable {
         return JsonUtil.toString(this);
     }
 
-    public static LogEventRaw valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, LogEventRaw.class);
+    public static EventRaw valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, EventRaw.class);
     }
 
-    public static LogEventRaw valueOf(String string) {
-        return JsonUtil.fromString(string, LogEventRaw.class);
+    public static EventRaw valueOf(String string) {
+        return JsonUtil.fromString(string, EventRaw.class);
     }
 }

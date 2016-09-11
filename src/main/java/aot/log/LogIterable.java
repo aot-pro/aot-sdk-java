@@ -21,6 +21,6 @@ package aot.log;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public interface LogIterable extends Iterable<LogEvent> {
+public interface LogIterable extends Iterable<Event> {
     public LogIterator iterator();
 }

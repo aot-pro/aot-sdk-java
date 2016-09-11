@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0
  */
 public final class Log {
-    private static final ConcurrentHashMap<String, LogLevel> levels = new ConcurrentHashMap<>(64);
+    private static final ConcurrentHashMap<String, Layer> levels = new ConcurrentHashMap<>(64);
     private static final ThreadLocal<LinkedHashMap<String, String>> tags = new ThreadLocal<LinkedHashMap<String, String>>() {
         @Override
         protected LinkedHashMap<String, String> initialValue() {

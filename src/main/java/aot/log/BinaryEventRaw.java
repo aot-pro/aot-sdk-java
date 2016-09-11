@@ -22,25 +22,23 @@ import aot.util.json.JsonUtil;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Map;
-
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class LogBinaryEvent extends LogEvent {
+class BinaryEventRaw extends EventRaw {
     private static final long serialVersionUID = 1;
 
-    public final String binaryType;
+    public final int binaryType;
     public final byte[] binaryData;
 
     @JsonCreator
-    public LogBinaryEvent(@JsonProperty("time") long time,
-                          @JsonProperty("level") String level,
-                          @JsonProperty("logger") String logger,
+    public BinaryEventRaw(@JsonProperty("time") long time,
+                          @JsonProperty("level") int level,
+                          @JsonProperty("logger") int logger,
                           @JsonProperty("message") String message,
-                          @JsonProperty("tags") Map<String, String> tags,
-                          @JsonProperty("binaryType") String binaryType,
+                          @JsonProperty("tags") int tags,
+                          @JsonProperty("binaryType") int binaryType,
                           @JsonProperty("binaryData") byte[] binaryData) {
         super(time, level, logger, message, tags);
 
@@ -48,11 +46,22 @@ public class LogBinaryEvent extends LogEvent {
         this.binaryData = binaryData;
     }
 
-    public static LogBinaryEvent valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, LogBinaryEvent.class);
+    @Override
+    public BinaryEvent toEvent(Stream stream) {
+        return new BinaryEvent(time,
+                                  stream.getString(level),
+                                  stream.getString(logger),
+                                  message,
+                                  stream.getTags(tags),
+                                  stream.getString(binaryType),
+                                  binaryData);
     }
 
-    public static LogBinaryEvent valueOf(String string) {
-        return JsonUtil.fromString(string, LogBinaryEvent.class);
+    public static BinaryEventRaw valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, BinaryEventRaw.class);
+    }
+
+    public static BinaryEventRaw valueOf(String string) {
+        return JsonUtil.fromString(string, BinaryEventRaw.class);
     }
 }

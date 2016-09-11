@@ -17,49 +17,42 @@
 
 package aot.log;
 
-import aot.util.binary.Binariable;
 import aot.util.cbor.CborUtil;
 import aot.util.json.JsonUtil;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.Map;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class LogConfig implements Serializable, Binariable {
+public class BinaryEvent extends Event {
     private static final long serialVersionUID = 1;
 
-    public final Map<String, Level> levels;
+    public final String binaryType;
+    public final byte[] binaryData;
 
     @JsonCreator
-    public LogConfig(@JsonProperty("levels") Map<String, Level> levels) {
-        this.levels = Collections.unmodifiableMap(levels);
+    public BinaryEvent(@JsonProperty("time") long time,
+                       @JsonProperty("level") String level,
+                       @JsonProperty("logger") String logger,
+                       @JsonProperty("message") String message,
+                       @JsonProperty("tags") Map<String, String> tags,
+                       @JsonProperty("binaryType") String binaryType,
+                       @JsonProperty("binaryData") byte[] binaryData) {
+        super(time, level, logger, message, tags);
+
+        this.binaryType = binaryType;
+        this.binaryData = binaryData;
     }
 
-    @Override
-    public byte[] toBytes() {
-        return CborUtil.toBytes(this);
+    public static BinaryEvent valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, BinaryEvent.class);
     }
 
-    @Override
-    public String toString() {
-        return JsonUtil.toString(this);
-    }
-
-    public static LogConfig valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, LogConfig.class);
-    }
-
-    public static LogConfig valueOf(String string) {
-        return JsonUtil.fromString(string, LogConfig.class);
-    }
-
-    public static class Level implements Serializable {
-        private static final long serialVersionUID = 1;
+    public static BinaryEvent valueOf(String string) {
+        return JsonUtil.fromString(string, BinaryEvent.class);
     }
 }

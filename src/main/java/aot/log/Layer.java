@@ -24,16 +24,16 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-final class LogLevel {
+final class Layer {
     private final String id;
-    private final LogBuffer buffer1;
-    private final LogBuffer buffer2;
+    private final Buffer buffer1;
+    private final Buffer buffer2;
     private final AtomicBoolean bufferFlag = new AtomicBoolean(true);
     private final AtomicLong lost = new AtomicLong(0);
 
-    public LogLevel(String id, int capacity) {
+    public Layer(String id, int capacity) {
         this.id = id;
-        this.buffer1 = new LogBuffer(capacity, null);
-        this.buffer2 = new LogBuffer(capacity, null);
+        this.buffer1 = new Buffer(capacity, null);
+        this.buffer2 = new Buffer(capacity, null);
     }
 }

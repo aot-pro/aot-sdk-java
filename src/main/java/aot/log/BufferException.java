@@ -21,9 +21,9 @@ package aot.log;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-final class LogBufferException extends RuntimeException {
+final class BufferException extends RuntimeException {
     private static final long serialVersionUID = 1;
 
-    public LogBufferException() {
+    public BufferException() {
     }
 }

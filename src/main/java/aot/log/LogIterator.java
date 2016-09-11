@@ -23,7 +23,7 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public interface LogIterator extends Iterator<LogEvent> {
+public interface LogIterator extends Iterator<Event> {
     public boolean hasPrev();
-    public LogEvent prev();
+    public Event prev();
 }
