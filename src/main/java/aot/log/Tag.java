@@ -33,7 +33,7 @@ public class Tag implements AutoCloseable, Serializable {
     public Tag(String key, String value) {
         this.key = key;
         this.value = value;
-        this.remove = Logger.addTag(key, value);
+        this.remove = Log.addTag(key, value);
     }
 
     public String getKey() {
@@ -47,7 +47,7 @@ public class Tag implements AutoCloseable, Serializable {
     @Override
     public void close() throws Exception {
         if (remove) {
-            Logger.removeTag(key);
+            Log.removeTag(key);
         }
     }
 }

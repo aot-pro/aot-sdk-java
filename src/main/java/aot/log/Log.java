@@ -17,6 +17,7 @@
 
 package aot.log;
 
+import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -25,4 +26,30 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class Log {
     private static final ConcurrentHashMap<String, LogLevel> levels = new ConcurrentHashMap<>(64);
+    private static final ThreadLocal<LinkedHashMap<String, String>> tags = new ThreadLocal<LinkedHashMap<String, String>>() {
+        @Override
+        protected LinkedHashMap<String, String> initialValue() {
+            return new LinkedHashMap<>();
+        }
+    };
+
+    private Log() {
+    }
+
+    public static void log(String channel, String module, String message) {
+    }
+
+    public static boolean addTag(String key, String value) {
+        LinkedHashMap<String, String> tags = Log.tags.get();
+        if (!tags.containsKey(key)) {
+            tags.put(key, value);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static void removeTag(String key) {
+        Log.tags.get().remove(key);
+    }
 }
