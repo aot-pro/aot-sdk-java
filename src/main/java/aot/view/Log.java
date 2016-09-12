@@ -23,25 +23,19 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Layer implements Iterable<Year> {
-    protected final Log log;
-    protected final String id;
+public class Log implements Iterable<Layer> {
+    protected final Instance instance;
 
-    protected Layer(Log log, String id) {
-        this.log = log;
-        this.id = id;
+    protected Log(Instance instance) {
+        this.instance = instance;
     }
 
-    public Log getLog() {
-        return log;
-    }
-
-    public String getId() {
-        return id;
+    public Instance getInstance() {
+        return instance;
     }
 
     @Override
-    public Iterator<Year> iterator() {
+    public Iterator<Layer> iterator() {
         return null;
     }
 }

@@ -17,31 +17,18 @@
 
 package aot.view;
 
-import java.util.Iterator;
-
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Layer implements Iterable<Year> {
-    protected final Log log;
-    protected final String id;
+public class Stat {
+    protected final Instance instance;
 
-    protected Layer(Log log, String id) {
-        this.log = log;
-        this.id = id;
+    protected Stat(Instance instance) {
+        this.instance = instance;
     }
 
-    public Log getLog() {
-        return log;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public Iterator<Year> iterator() {
-        return null;
+    public Instance getInstance() {
+        return instance;
     }
 }

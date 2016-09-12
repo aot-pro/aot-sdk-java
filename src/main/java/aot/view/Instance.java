@@ -23,13 +23,17 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Instance implements Iterable<Layer> {
+public class Instance {
     protected final Version version;
     protected final String id;
+    protected final Log log;
+    protected final Stat stat;
 
     protected Instance(Version version, String id) {
         this.version = version;
         this.id = id;
+        this.log = new Log(this);
+        this.stat = new Stat(this);
     }
 
     public Version getVersion() {
@@ -40,8 +44,11 @@ public class Instance implements Iterable<Layer> {
         return id;
     }
 
-    @Override
-    public Iterator<Layer> iterator() {
-        return null;
+    public Log getLog() {
+        return log;
+    }
+
+    public Stat getStat() {
+        return stat;
     }
 }
