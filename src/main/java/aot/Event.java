@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot.log;
+package aot;
 
 import aot.util.binary.Binariable;
 import aot.util.cbor.CborUtil;
@@ -24,26 +24,27 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-class EventRaw implements Serializable, Binariable {
+public class Event implements Serializable, Binariable, Comparable<Event> {
     private static final long serialVersionUID = 1;
 
     public final long time;
-    public final int level;
-    public final int logger;
+    public final String level;
+    public final String logger;
     public final String message;
-    public final int tags;
+    public final Map<String, String> tags;
 
     @JsonCreator
-    public EventRaw(@JsonProperty("time") long time,
-                    @JsonProperty("level") int level,
-                    @JsonProperty("logger") int logger,
-                    @JsonProperty("message") String message,
-                    @JsonProperty("tags") int tags) {
+    public Event(@JsonProperty("time") long time,
+                 @JsonProperty("level") String level,
+                 @JsonProperty("logger") String logger,
+                 @JsonProperty("message") String message,
+                 @JsonProperty("tags") Map<String, String> tags) {
         this.time = time;
         this.level = level;
         this.logger = logger;
@@ -51,12 +52,15 @@ class EventRaw implements Serializable, Binariable {
         this.tags = tags;
     }
 
-    public Event toEvent(Stream stream) {
-        return new Event(time,
-                            stream.getString(level),
-                            stream.getString(logger),
-                            message,
-                            stream.getTags(tags));
+    @Override
+    public int compareTo(Event event) {
+        if (time < event.time) {
+            return -1;
+        } else if (time > event.time) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     @Override
@@ -69,11 +73,11 @@ class EventRaw implements Serializable, Binariable {
         return JsonUtil.toString(this);
     }
 
-    public static EventRaw valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, EventRaw.class);
+    public static Event valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, Event.class);
     }
 
-    public static EventRaw valueOf(String string) {
-        return JsonUtil.fromString(string, EventRaw.class);
+    public static Event valueOf(String string) {
+        return JsonUtil.fromString(string, Event.class);
     }
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot.log;
+package aot;
 
 import aot.util.cbor.CborUtil;
 import aot.util.json.JsonUtil;

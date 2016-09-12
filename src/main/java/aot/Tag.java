@@ -15,15 +15,39 @@
  * limitations under the License.
  */
 
-package aot.log;
+package aot;
 
-import java.util.Iterator;
+import java.io.Serializable;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public interface EventIterator extends Iterator<Event> {
-    public boolean hasPrev();
-    public Event prev();
+public class Tag implements AutoCloseable, Serializable {
+    private static final long serialVersionUID = 1;
+
+    protected final String key;
+    protected final String value;
+    protected final boolean remove;
+
+    public Tag(String key, String value) {
+        this.key = key;
+        this.value = value;
+        this.remove = Log.addTag(key, value);
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (remove) {
+            Log.removeTag(key);
+        }
+    }
 }

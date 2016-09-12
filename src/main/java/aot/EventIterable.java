@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package aot.stat;
+package aot;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public final class Stat {
+public interface EventIterable extends Iterable<Event> {
+    public EventIterator iterator();
 }

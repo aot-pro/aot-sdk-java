@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot.log;
+package aot;
 
 import aot.storage.Storage;
 import aot.util.cbor.CborUtil;

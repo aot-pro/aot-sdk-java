@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot.log;
+package aot;
 
 import java.util.Arrays;
 

@@ -15,39 +15,15 @@
  * limitations under the License.
  */
 
-package aot.log;
-
-import java.io.Serializable;
+package aot;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Tag implements AutoCloseable, Serializable {
+final class BufferException extends RuntimeException {
     private static final long serialVersionUID = 1;
 
-    protected final String key;
-    protected final String value;
-    protected final boolean remove;
-
-    public Tag(String key, String value) {
-        this.key = key;
-        this.value = value;
-        this.remove = Log.addTag(key, value);
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public void close() throws Exception {
-        if (remove) {
-            Log.removeTag(key);
-        }
+    public BufferException() {
     }
 }

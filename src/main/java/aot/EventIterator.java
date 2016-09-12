@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 
-package aot.log;
+package aot;
+
+import java.util.Iterator;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public interface EventIterable extends Iterable<Event> {
-    public EventIterator iterator();
+public interface EventIterator extends Iterator<Event> {
+    public boolean hasPrev();
+    public Event prev();
 }

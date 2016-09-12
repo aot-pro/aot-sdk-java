@@ -15,15 +15,25 @@
  * limitations under the License.
  */
 
-package aot.log;
+package aot;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-final class BufferException extends RuntimeException {
-    private static final long serialVersionUID = 1;
+final class Layer {
+    private final String id;
+    private final Buffer buffer1;
+    private final Buffer buffer2;
+    private final AtomicBoolean bufferFlag = new AtomicBoolean(true);
+    private final AtomicLong lost = new AtomicLong(0);
 
-    public BufferException() {
+    public Layer(String id, int size) {
+        this.id = id;
+        this.buffer1 = new Buffer(size, null);
+        this.buffer2 = new Buffer(size, null);
     }
 }
