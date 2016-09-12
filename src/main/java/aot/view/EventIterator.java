@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package aot;
+package aot.view;
+
+import aot.view.Event;
 
 import java.util.Iterator;
 

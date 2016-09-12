@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot;
+package aot.view;
 
 import aot.util.binary.Binariable;
 import aot.util.cbor.CborUtil;

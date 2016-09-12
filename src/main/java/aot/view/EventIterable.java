@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot;
+package aot.view;
 
 /**
  * @author Dmitry Kotlyarov

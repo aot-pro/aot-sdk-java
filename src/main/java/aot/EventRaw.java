@@ -20,6 +20,7 @@ package aot;
 import aot.util.binary.Binariable;
 import aot.util.cbor.CborUtil;
 import aot.util.json.JsonUtil;
+import aot.view.Event;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

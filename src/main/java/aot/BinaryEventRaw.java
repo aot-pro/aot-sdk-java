@@ -19,6 +19,7 @@ package aot;
 
 import aot.util.cbor.CborUtil;
 import aot.util.json.JsonUtil;
+import aot.view.BinaryEvent;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

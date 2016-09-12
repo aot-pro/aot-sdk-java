@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-package aot;
+package aot.view;
+
+import aot.view.BinaryEvent;
+import aot.view.Event;
 
 import java.io.Serializable;
 import java.util.List;
