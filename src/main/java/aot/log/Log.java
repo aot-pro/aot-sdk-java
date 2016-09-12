@@ -20,6 +20,7 @@ package aot.log;
 import aot.Config;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -28,8 +29,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 1.0
  */
 public final class Log {
-    private static Config config;
-    private static final AtomicReference<Layer[]> layers = new AtomicReference<>(new Layer[0]);
+    private static final AtomicReference<Config> config = new AtomicReference<>(null);
+    private static final AtomicReference<Map<String, Layer>> layers = new AtomicReference<>(null);
     private static final ThreadLocal<LinkedHashMap<String, String>> tags = new ThreadLocal<LinkedHashMap<String, String>>() {
         @Override
         protected LinkedHashMap<String, String> initialValue() {
