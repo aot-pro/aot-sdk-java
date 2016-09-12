@@ -23,13 +23,13 @@ import java.util.Arrays;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Mixer implements LogIterator {
-    protected final LogIterator[] iterators;
+public class Mixer implements EventIterator {
+    protected final EventIterator[] iterators;
     protected final boolean[] head;
     protected final boolean[] tail;
     protected final Event[] events;
 
-    public Mixer(LogIterator[] iterators) {
+    public Mixer(EventIterator[] iterators) {
         this.iterators = iterators.clone();
         this.head = new boolean[this.iterators.length];
         this.tail = new boolean[this.iterators.length];
@@ -41,7 +41,7 @@ public class Mixer implements LogIterator {
 
     @Override
     public boolean hasPrev() {
-        for (LogIterator it : iterators) {
+        for (EventIterator it : iterators) {
         }
         return false;
     }

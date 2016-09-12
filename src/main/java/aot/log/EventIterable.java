@@ -17,13 +17,10 @@
 
 package aot.log;
 
-import java.util.Iterator;
-
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public interface LogIterator extends Iterator<Event> {
-    public boolean hasPrev();
-    public Event prev();
+public interface EventIterable extends Iterable<Event> {
+    public EventIterator iterator();
 }
