@@ -20,7 +20,7 @@ package aot;
 import aot.util.binary.Binariable;
 import aot.util.cbor.CborUtil;
 import aot.util.json.JsonUtil;
-import aot.view.Event;
+import aot.view.LogEvent;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -52,8 +52,8 @@ class EventRaw implements Serializable, Binariable {
         this.tags = tags;
     }
 
-    public Event toEvent(Stream stream) {
-        return new Event(time,
+    public LogEvent toEvent(Stream stream) {
+        return new LogEvent(time,
                             stream.getString(level),
                             stream.getString(logger),
                             message,

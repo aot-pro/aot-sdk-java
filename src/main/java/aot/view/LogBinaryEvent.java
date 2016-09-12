@@ -28,31 +28,31 @@ import java.util.Map;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class BinaryEvent extends Event {
+public class LogBinaryEvent extends LogEvent {
     private static final long serialVersionUID = 1;
 
     public final String binaryType;
     public final byte[] binaryData;
 
     @JsonCreator
-    public BinaryEvent(@JsonProperty("time") long time,
-                       @JsonProperty("level") String level,
-                       @JsonProperty("logger") String logger,
-                       @JsonProperty("message") String message,
-                       @JsonProperty("tags") Map<String, String> tags,
-                       @JsonProperty("binaryType") String binaryType,
-                       @JsonProperty("binaryData") byte[] binaryData) {
+    public LogBinaryEvent(@JsonProperty("time") long time,
+                          @JsonProperty("level") String level,
+                          @JsonProperty("logger") String logger,
+                          @JsonProperty("message") String message,
+                          @JsonProperty("tags") Map<String, String> tags,
+                          @JsonProperty("binaryType") String binaryType,
+                          @JsonProperty("binaryData") byte[] binaryData) {
         super(time, level, logger, message, tags);
 
         this.binaryType = binaryType;
         this.binaryData = binaryData;
     }
 
-    public static BinaryEvent valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, BinaryEvent.class);
+    public static LogBinaryEvent valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, LogBinaryEvent.class);
     }
 
-    public static BinaryEvent valueOf(String string) {
-        return JsonUtil.fromString(string, BinaryEvent.class);
+    public static LogBinaryEvent valueOf(String string) {
+        return JsonUtil.fromString(string, LogBinaryEvent.class);
     }
 }

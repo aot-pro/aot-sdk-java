@@ -28,7 +28,7 @@ import java.util.Map;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class ExceptionEvent extends BinaryEvent {
+public class LogExceptionEvent extends LogBinaryEvent {
     private static final long serialVersionUID = 1;
 
     public final String exceptionType;
@@ -36,16 +36,16 @@ public class ExceptionEvent extends BinaryEvent {
     public final String exceptionStackTrace;
 
     @JsonCreator
-    public ExceptionEvent(@JsonProperty("time") long time,
-                          @JsonProperty("level") String level,
-                          @JsonProperty("logger") String logger,
-                          @JsonProperty("message") String message,
-                          @JsonProperty("tags") Map<String, String> tags,
-                          @JsonProperty("binaryType") String binaryType,
-                          @JsonProperty("binaryData") byte[] binaryData,
-                          @JsonProperty("exceptionType") String exceptionType,
-                          @JsonProperty("exceptionMessage") String exceptionMessage,
-                          @JsonProperty("exceptionStackTrace") String exceptionStackTrace) {
+    public LogExceptionEvent(@JsonProperty("time") long time,
+                             @JsonProperty("level") String level,
+                             @JsonProperty("logger") String logger,
+                             @JsonProperty("message") String message,
+                             @JsonProperty("tags") Map<String, String> tags,
+                             @JsonProperty("binaryType") String binaryType,
+                             @JsonProperty("binaryData") byte[] binaryData,
+                             @JsonProperty("exceptionType") String exceptionType,
+                             @JsonProperty("exceptionMessage") String exceptionMessage,
+                             @JsonProperty("exceptionStackTrace") String exceptionStackTrace) {
         super(time, level, logger, message, tags, binaryType, binaryData);
 
         this.exceptionType = exceptionType;
@@ -53,11 +53,11 @@ public class ExceptionEvent extends BinaryEvent {
         this.exceptionStackTrace = exceptionStackTrace;
     }
 
-    public static ExceptionEvent valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, ExceptionEvent.class);
+    public static LogExceptionEvent valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, LogExceptionEvent.class);
     }
 
-    public static ExceptionEvent valueOf(String string) {
-        return JsonUtil.fromString(string, ExceptionEvent.class);
+    public static LogExceptionEvent valueOf(String string) {
+        return JsonUtil.fromString(string, LogExceptionEvent.class);
     }
 }

@@ -17,15 +17,24 @@
 
 package aot.view;
 
-import aot.view.Event;
-
-import java.util.Iterator;
-
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public interface EventIterator extends Iterator<Event> {
-    public boolean hasPrev();
-    public Event prev();
+public class LogFile {
+    protected final LogMinute minute;
+    protected final String id;
+
+    protected LogFile(LogMinute minute, String id) {
+        this.minute = minute;
+        this.id = id;
+    }
+
+    public LogMinute getMinute() {
+        return minute;
+    }
+
+    public String getId() {
+        return id;
+    }
 }

@@ -17,24 +17,31 @@
 
 package aot.view;
 
+import java.util.Iterator;
+
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Minute {
-    protected final Hour hour;
+public class LogMonth implements Iterable<LogDay> {
+    protected final LogYear year;
     protected final String id;
 
-    protected Minute(Hour hour, String id) {
-        this.hour = hour;
+    protected LogMonth(LogYear year, String id) {
+        this.year = year;
         this.id = id;
     }
 
-    public Hour getHour() {
-        return hour;
+    public LogYear getYear() {
+        return year;
     }
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public Iterator<LogDay> iterator() {
+        return null;
     }
 }

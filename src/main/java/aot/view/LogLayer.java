@@ -23,17 +23,17 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Day implements Iterable<Hour> {
-    protected final Month month;
+public class LogLayer implements Iterable<LogYear> {
+    protected final Log log;
     protected final String id;
 
-    protected Day(Month month, String id) {
-        this.month = month;
+    protected LogLayer(Log log, String id) {
+        this.log = log;
         this.id = id;
     }
 
-    public Month getMonth() {
-        return month;
+    public Log getLog() {
+        return log;
     }
 
     public String getId() {
@@ -41,7 +41,7 @@ public class Day implements Iterable<Hour> {
     }
 
     @Override
-    public Iterator<Hour> iterator() {
+    public Iterator<LogYear> iterator() {
         return null;
     }
 }

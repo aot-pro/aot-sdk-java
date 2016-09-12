@@ -23,17 +23,17 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Layer implements Iterable<Year> {
-    protected final Log log;
+public class LogYear implements Iterable<LogMonth> {
+    protected final LogLayer layer;
     protected final String id;
 
-    protected Layer(Log log, String id) {
-        this.log = log;
+    protected LogYear(LogLayer layer, String id) {
+        this.layer = layer;
         this.id = id;
     }
 
-    public Log getLog() {
-        return log;
+    public LogLayer getLayer() {
+        return layer;
     }
 
     public String getId() {
@@ -41,7 +41,7 @@ public class Layer implements Iterable<Year> {
     }
 
     @Override
-    public Iterator<Year> iterator() {
+    public Iterator<LogMonth> iterator() {
         return null;
     }
 }

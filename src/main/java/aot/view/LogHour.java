@@ -17,10 +17,31 @@
 
 package aot.view;
 
+import java.util.Iterator;
+
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public interface EventIterable extends Iterable<Event> {
-    public EventIterator iterator();
+public class LogHour implements Iterable<LogMinute> {
+    protected final LogDay day;
+    protected final String id;
+
+    protected LogHour(LogDay day, String id) {
+        this.day = day;
+        this.id = id;
+    }
+
+    public LogDay getDay() {
+        return day;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public Iterator<LogMinute> iterator() {
+        return null;
+    }
 }

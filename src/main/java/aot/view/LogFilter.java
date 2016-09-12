@@ -17,9 +17,6 @@
 
 package aot.view;
 
-import aot.view.BinaryEvent;
-import aot.view.Event;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -28,7 +25,7 @@ import java.util.regex.Pattern;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Filter implements Serializable {
+public class LogFilter implements Serializable {
     private static final long serialVersionUID = 1;
 
     public final long begin;
@@ -39,13 +36,13 @@ public class Filter implements Serializable {
     public final Pattern dataType;
     public final int dataLength;
 
-    public Filter(long begin,
-                  long end,
-                  Pattern logger,
-                  Pattern message,
-                  List<Tag> tags,
-                  Pattern dataType,
-                  int dataLength) {
+    public LogFilter(long begin,
+                     long end,
+                     Pattern logger,
+                     Pattern message,
+                     List<Tag> tags,
+                     Pattern dataType,
+                     int dataLength) {
         this.begin = begin;
         this.end = end;
         this.logger = logger;
@@ -55,7 +52,7 @@ public class Filter implements Serializable {
         this.dataLength = dataLength;
     }
 
-    protected boolean matchesTags(Event event) {
+    protected boolean matchesTags(LogEvent event) {
         if (tags == null) {
             return true;
         }
@@ -70,7 +67,7 @@ public class Filter implements Serializable {
         return false;
     }
 
-    public boolean matches(Event event) {
+    public boolean matches(LogEvent event) {
         if ((event.time < begin) || (event.time >= end)) {
             return false;
         } else if ((logger != null) && (!logger.matcher(event.logger).matches())) {
@@ -79,8 +76,8 @@ public class Filter implements Serializable {
             return false;
         } else if (!matchesTags(event)) {
             return false;
-        } else if (event instanceof BinaryEvent) {
-            BinaryEvent dataEvent = (BinaryEvent) event;
+        } else if (event instanceof LogBinaryEvent) {
+            LogBinaryEvent dataEvent = (LogBinaryEvent) event;
             if ((dataType != null) && (!dataType.matcher(dataEvent.binaryType).matches())) {
                 return false;
             } else if ((dataLength >= 0) && (dataEvent.binaryData.length > dataLength)) {

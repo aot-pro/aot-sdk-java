@@ -23,25 +23,7 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Hour implements Iterable<Minute> {
-    protected final Day day;
-    protected final String id;
-
-    protected Hour(Day day, String id) {
-        this.day = day;
-        this.id = id;
-    }
-
-    public Day getDay() {
-        return day;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public Iterator<Minute> iterator() {
-        return null;
-    }
+public interface LogEventIterator extends Iterator<LogEvent> {
+    public boolean hasPrev();
+    public LogEvent prev();
 }

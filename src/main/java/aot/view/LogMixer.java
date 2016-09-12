@@ -17,26 +17,23 @@
 
 package aot.view;
 
-import aot.view.Event;
-import aot.view.EventIterator;
-
 import java.util.Arrays;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Mixer implements EventIterator {
-    protected final EventIterator[] iterators;
+public class LogMixer implements LogEventIterator {
+    protected final LogEventIterator[] iterators;
     protected final boolean[] head;
     protected final boolean[] tail;
-    protected final Event[] events;
+    protected final LogEvent[] events;
 
-    public Mixer(EventIterator[] iterators) {
+    public LogMixer(LogEventIterator[] iterators) {
         this.iterators = iterators.clone();
         this.head = new boolean[this.iterators.length];
         this.tail = new boolean[this.iterators.length];
-        this.events = new Event[this.iterators.length];
+        this.events = new LogEvent[this.iterators.length];
 
         Arrays.fill(this.head, true);
         Arrays.fill(this.tail, false);
@@ -44,13 +41,13 @@ public class Mixer implements EventIterator {
 
     @Override
     public boolean hasPrev() {
-        for (EventIterator it : iterators) {
+        for (LogEventIterator it : iterators) {
         }
         return false;
     }
 
     @Override
-    public Event prev() {
+    public LogEvent prev() {
         return null;
     }
 
@@ -60,7 +57,7 @@ public class Mixer implements EventIterator {
     }
 
     @Override
-    public Event next() {
+    public LogEvent next() {
         return null;
     }
 
