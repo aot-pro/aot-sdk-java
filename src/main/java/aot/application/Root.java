@@ -43,7 +43,7 @@ public final class Root {
     static {
         Initializer initializer;
         try {
-            Class clazz = Class.forName("aot.CustomInitializer");
+            Class clazz = Class.forName("aot.application.CustomInitializer");
             try {
                 initializer = (Initializer) clazz.newInstance();
             } catch (Exception e) {
