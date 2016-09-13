@@ -49,13 +49,13 @@ class BinaryEventRaw extends EventRaw {
 
     @Override
     public BinaryEvent toEvent(Stream stream) {
-        return new BinaryEvent(time,
+        return null;/*new BinaryEvent(time,
                                   stream.getString(level),
                                   stream.getString(logger),
                                   message,
                                   stream.getTags(tags),
                                   stream.getString(binaryType),
-                                  binaryData);
+                                  binaryData);*/
     }
 
     public static BinaryEventRaw valueOf(byte[] bytes) {

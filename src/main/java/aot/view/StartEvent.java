@@ -30,48 +30,57 @@ import java.util.Set;
  * @since 1.0
  */
 public class StartEvent extends Event {
-    private static final long serialVersionUID = 1;
+    protected final String application;
+    protected final String version;
+    protected final String instance;
+    protected final String id;
+    protected final Map<String, String> manifestAttributes;
+    protected final Map<String, String> systemProperties;
+    protected final Map<String, String> environmentProperties;
+    protected final String securityManager;
 
-    public final String startId;
-    public final String application;
-    public final String version;
-    public final Map<String, String> systemProperties;
-    public final Map<String, String> environmentProperties;
-    public final String securityManager;
-    public final Set<String> transformers;
-    public final Set<String> protocolHandlers;
+    protected StartEvent(LogFile file, long time, String logger, String message, Map<String, String> tags, String application, String version, String instance, String id, Map<String, String> manifestAttributes, Map<String, String> systemProperties, Map<String, String> environmentProperties, String securityManager) {
+        super(file, time, logger, message, tags);
 
-    @JsonCreator
-    public StartEvent(@JsonProperty("time") long time,
-                      @JsonProperty("level") String level,
-                      @JsonProperty("logger") String logger,
-                      @JsonProperty("message") String message,
-                      @JsonProperty("tags") Map<String, String> tags,
-                      @JsonProperty("startId") String startId,
-                      @JsonProperty("application") String application,
-                      @JsonProperty("version") String version,
-                      @JsonProperty("systemProperties") Map<String, String> systemProperties,
-                      @JsonProperty("environmentProperties") Map<String, String> environmentProperties,
-                      @JsonProperty("securityManager") String securityManager,
-                      @JsonProperty("transformers") Set<String> transformers,
-                      @JsonProperty("protocolHandlers") Set<String> protocolHandlers) {
-        super(time, level, logger, message, tags);
-
-        this.startId = startId;
         this.application = application;
         this.version = version;
+        this.instance = instance;
+        this.id = id;
+        this.manifestAttributes = manifestAttributes;
         this.systemProperties = systemProperties;
         this.environmentProperties = environmentProperties;
         this.securityManager = securityManager;
-        this.transformers = transformers;
-        this.protocolHandlers = protocolHandlers;
     }
 
-    public static StartEvent valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, StartEvent.class);
+    public String getApplication() {
+        return application;
     }
 
-    public static StartEvent valueOf(String string) {
-        return JsonUtil.fromString(string, StartEvent.class);
+    public String getVersion() {
+        return version;
+    }
+
+    public String getInstance() {
+        return instance;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Map<String, String> getManifestAttributes() {
+        return manifestAttributes;
+    }
+
+    public Map<String, String> getSystemProperties() {
+        return systemProperties;
+    }
+
+    public Map<String, String> getEnvironmentProperties() {
+        return environmentProperties;
+    }
+
+    public String getSecurityManager() {
+        return securityManager;
     }
 }

@@ -29,35 +29,15 @@ import java.util.Map;
  * @since 1.0
  */
 public class ExceptionEvent extends BinaryEvent {
-    private static final long serialVersionUID = 1;
+    protected final String exceptionType;
+    protected final String exceptionMessage;
+    protected final String exceptionStackTrace;
 
-    public final String exceptionType;
-    public final String exceptionMessage;
-    public final String exceptionStackTrace;
-
-    @JsonCreator
-    public ExceptionEvent(@JsonProperty("time") long time,
-                          @JsonProperty("level") String level,
-                          @JsonProperty("logger") String logger,
-                          @JsonProperty("message") String message,
-                          @JsonProperty("tags") Map<String, String> tags,
-                          @JsonProperty("binaryType") String binaryType,
-                          @JsonProperty("binaryData") byte[] binaryData,
-                          @JsonProperty("exceptionType") String exceptionType,
-                          @JsonProperty("exceptionMessage") String exceptionMessage,
-                          @JsonProperty("exceptionStackTrace") String exceptionStackTrace) {
-        super(time, level, logger, message, tags, binaryType, binaryData);
+    protected ExceptionEvent(LogFile file, long time, String logger, String message, Map<String, String> tags, String binaryType, byte[] binaryData, String exceptionType, String exceptionMessage, String exceptionStackTrace) {
+        super(file, time, logger, message, tags, binaryType, binaryData);
 
         this.exceptionType = exceptionType;
         this.exceptionMessage = exceptionMessage;
         this.exceptionStackTrace = exceptionStackTrace;
-    }
-
-    public static ExceptionEvent valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, ExceptionEvent.class);
-    }
-
-    public static ExceptionEvent valueOf(String string) {
-        return JsonUtil.fromString(string, ExceptionEvent.class);
     }
 }

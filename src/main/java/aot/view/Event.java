@@ -30,26 +30,39 @@ import java.util.Map;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Event implements Serializable, Binariable, Comparable<Event> {
-    private static final long serialVersionUID = 1;
+public class Event implements Comparable<Event> {
+    protected final LogFile file;
+    protected final long time;
+    protected final String logger;
+    protected final String message;
+    protected final Map<String, String> tags;
 
-    public final long time;
-    public final String level;
-    public final String logger;
-    public final String message;
-    public final Map<String, String> tags;
-
-    @JsonCreator
-    public Event(@JsonProperty("time") long time,
-                 @JsonProperty("level") String level,
-                 @JsonProperty("logger") String logger,
-                 @JsonProperty("message") String message,
-                 @JsonProperty("tags") Map<String, String> tags) {
+    protected Event(LogFile file, long time, String logger, String message, Map<String, String> tags) {
+        this.file = file;
         this.time = time;
-        this.level = level;
         this.logger = logger;
         this.message = message;
         this.tags = tags;
+    }
+
+    public LogFile getFile() {
+        return file;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public String getLogger() {
+        return logger;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Map<String, String> getTags() {
+        return tags;
     }
 
     @Override
@@ -61,23 +74,5 @@ public class Event implements Serializable, Binariable, Comparable<Event> {
         } else {
             return 0;
         }
-    }
-
-    @Override
-    public byte[] toBytes() {
-        return CborUtil.toBytes(this);
-    }
-
-    @Override
-    public String toString() {
-        return JsonUtil.toString(this);
-    }
-
-    public static Event valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, Event.class);
-    }
-
-    public static Event valueOf(String string) {
-        return JsonUtil.fromString(string, Event.class);
     }
 }

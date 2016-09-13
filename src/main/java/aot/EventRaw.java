@@ -53,11 +53,11 @@ class EventRaw implements Serializable, Binariable {
     }
 
     public Event toEvent(Stream stream) {
-        return new Event(time,
-                            stream.getString(level),
-                            stream.getString(logger),
-                            message,
-                            stream.getTags(tags));
+        return null;/*new Event(null,
+                         time,
+                         stream.getString(logger),
+                         message,
+                         stream.getTags(tags));*/
     }
 
     @Override
