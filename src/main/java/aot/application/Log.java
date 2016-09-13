@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot;
+package aot.application;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
