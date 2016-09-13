@@ -51,12 +51,8 @@ final class EventBuffer {
         this.begin = System.currentTimeMillis();
     }
 
-    public int log(String level, String logger, String message, long tagsRevision, Map<String, String> tags) {
-        return putEvent(new Event(System.currentTimeMillis(),
-                                        putString(level),
-                                        putString(logger),
-                                        message,
-                                        putTags(tagsRevision, tags)));
+    public int log(String logger, String message, long tagsRevision, Map<String, String> tags) {
+        return putEvent(new Event(System.currentTimeMillis(), putString(logger), message, putTags(tagsRevision, tags)));
     }
 
     private int putBytes(byte type, byte[] bytes) {

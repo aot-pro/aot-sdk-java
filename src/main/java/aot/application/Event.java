@@ -33,19 +33,16 @@ class Event implements Serializable, Binariable {
     private static final long serialVersionUID = 1;
 
     public final long time;
-    public final int level;
     public final int logger;
     public final String message;
     public final int tags;
 
     @JsonCreator
     public Event(@JsonProperty("time") long time,
-                 @JsonProperty("level") int level,
                  @JsonProperty("logger") int logger,
                  @JsonProperty("message") String message,
                  @JsonProperty("tags") int tags) {
         this.time = time;
-        this.level = level;
         this.logger = logger;
         this.message = message;
         this.tags = tags;

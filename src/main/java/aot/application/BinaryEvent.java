@@ -34,13 +34,12 @@ class BinaryEvent extends Event {
 
     @JsonCreator
     public BinaryEvent(@JsonProperty("time") long time,
-                       @JsonProperty("level") int level,
                        @JsonProperty("logger") int logger,
                        @JsonProperty("message") String message,
                        @JsonProperty("tags") int tags,
                        @JsonProperty("binaryType") int binaryType,
                        @JsonProperty("binaryData") byte[] binaryData) {
-        super(time, level, logger, message, tags);
+        super(time, logger, message, tags);
 
         this.binaryType = binaryType;
         this.binaryData = binaryData;
