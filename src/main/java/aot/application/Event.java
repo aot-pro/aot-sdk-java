@@ -20,7 +20,6 @@ package aot.application;
 import aot.util.binary.Binariable;
 import aot.util.cbor.CborUtil;
 import aot.util.json.JsonUtil;
-import aot.view.Event;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -30,7 +29,7 @@ import java.io.Serializable;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-class EventRaw implements Serializable, Binariable {
+class Event implements Serializable, Binariable {
     private static final long serialVersionUID = 1;
 
     public final long time;
@@ -40,11 +39,11 @@ class EventRaw implements Serializable, Binariable {
     public final int tags;
 
     @JsonCreator
-    public EventRaw(@JsonProperty("time") long time,
-                    @JsonProperty("level") int level,
-                    @JsonProperty("logger") int logger,
-                    @JsonProperty("message") String message,
-                    @JsonProperty("tags") int tags) {
+    public Event(@JsonProperty("time") long time,
+                 @JsonProperty("level") int level,
+                 @JsonProperty("logger") int logger,
+                 @JsonProperty("message") String message,
+                 @JsonProperty("tags") int tags) {
         this.time = time;
         this.level = level;
         this.logger = logger;
@@ -52,7 +51,7 @@ class EventRaw implements Serializable, Binariable {
         this.tags = tags;
     }
 
-    public Event toEvent(Stream stream) {
+    public aot.view.Event toEvent(EventStream stream) {
         return null;/*new Event(null,
                          time,
                          stream.getString(logger),
@@ -70,11 +69,11 @@ class EventRaw implements Serializable, Binariable {
         return JsonUtil.toString(this);
     }
 
-    public static EventRaw valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, EventRaw.class);
+    public static Event valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, Event.class);
     }
 
-    public static EventRaw valueOf(String string) {
-        return JsonUtil.fromString(string, EventRaw.class);
+    public static Event valueOf(String string) {
+        return JsonUtil.fromString(string, Event.class);
     }
 }

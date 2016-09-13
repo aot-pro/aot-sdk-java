@@ -26,14 +26,14 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 final class Layer {
     private final String id;
-    private final Buffer buffer1;
-    private final Buffer buffer2;
+    private final EventBuffer buffer1;
+    private final EventBuffer buffer2;
     private final AtomicBoolean bufferFlag = new AtomicBoolean(true);
     private final AtomicLong lost = new AtomicLong(0);
 
     public Layer(String id, int size) {
         this.id = id;
-        this.buffer1 = new Buffer(size, null);
-        this.buffer2 = new Buffer(size, null);
+        this.buffer1 = new EventBuffer(size, null);
+        this.buffer2 = new EventBuffer(size, null);
     }
 }

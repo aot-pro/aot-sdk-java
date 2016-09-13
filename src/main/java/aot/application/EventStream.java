@@ -28,12 +28,12 @@ import java.util.TreeMap;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-final class Stream {
+final class EventStream {
     private final HashMap<Integer, String> strings = new HashMap<>(4096);
     private final HashMap<Integer, Map<String, String>> tags = new HashMap<>(4096);
     private final ByteBuffer buffer;
 
-    Stream(byte[] buffer) {
+    EventStream(byte[] buffer) {
         this.buffer = ByteBuffer.wrap(buffer);
     }
 

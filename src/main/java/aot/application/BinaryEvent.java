@@ -19,7 +19,6 @@ package aot.application;
 
 import aot.util.cbor.CborUtil;
 import aot.util.json.JsonUtil;
-import aot.view.BinaryEvent;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,20 +26,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-class BinaryEventRaw extends EventRaw {
+class BinaryEvent extends Event {
     private static final long serialVersionUID = 1;
 
     public final int binaryType;
     public final byte[] binaryData;
 
     @JsonCreator
-    public BinaryEventRaw(@JsonProperty("time") long time,
-                          @JsonProperty("level") int level,
-                          @JsonProperty("logger") int logger,
-                          @JsonProperty("message") String message,
-                          @JsonProperty("tags") int tags,
-                          @JsonProperty("binaryType") int binaryType,
-                          @JsonProperty("binaryData") byte[] binaryData) {
+    public BinaryEvent(@JsonProperty("time") long time,
+                       @JsonProperty("level") int level,
+                       @JsonProperty("logger") int logger,
+                       @JsonProperty("message") String message,
+                       @JsonProperty("tags") int tags,
+                       @JsonProperty("binaryType") int binaryType,
+                       @JsonProperty("binaryData") byte[] binaryData) {
         super(time, level, logger, message, tags);
 
         this.binaryType = binaryType;
@@ -48,7 +47,7 @@ class BinaryEventRaw extends EventRaw {
     }
 
     @Override
-    public BinaryEvent toEvent(Stream stream) {
+    public aot.view.BinaryEvent toEvent(EventStream stream) {
         return null;/*new BinaryEvent(time,
                                   stream.getString(level),
                                   stream.getString(logger),
@@ -58,11 +57,11 @@ class BinaryEventRaw extends EventRaw {
                                   binaryData);*/
     }
 
-    public static BinaryEventRaw valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, BinaryEventRaw.class);
+    public static BinaryEvent valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, BinaryEvent.class);
     }
 
-    public static BinaryEventRaw valueOf(String string) {
-        return JsonUtil.fromString(string, BinaryEventRaw.class);
+    public static BinaryEvent valueOf(String string) {
+        return JsonUtil.fromString(string, BinaryEvent.class);
     }
 }
