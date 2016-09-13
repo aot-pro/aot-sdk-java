@@ -24,16 +24,16 @@ import java.util.Iterator;
  * @since 1.0
  */
 public class LogLayer implements Iterable<LogYear> {
-    protected final Log log;
+    protected final LogView view;
     protected final String id;
 
-    protected LogLayer(Log log, String id) {
-        this.log = log;
+    protected LogLayer(LogView view, String id) {
+        this.view = view;
         this.id = id;
     }
 
-    public Log getLog() {
-        return log;
+    public LogView getView() {
+        return view;
     }
 
     public String getId() {

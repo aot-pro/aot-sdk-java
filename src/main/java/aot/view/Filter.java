@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class LogFilter implements Serializable {
+public class Filter implements Serializable {
     private static final long serialVersionUID = 1;
 
     public final long begin;
@@ -36,13 +36,13 @@ public class LogFilter implements Serializable {
     public final Pattern dataType;
     public final int dataLength;
 
-    public LogFilter(long begin,
-                     long end,
-                     Pattern logger,
-                     Pattern message,
-                     List<Tag> tags,
-                     Pattern dataType,
-                     int dataLength) {
+    public Filter(long begin,
+                  long end,
+                  Pattern logger,
+                  Pattern message,
+                  List<Tag> tags,
+                  Pattern dataType,
+                  int dataLength) {
         this.begin = begin;
         this.end = end;
         this.logger = logger;
@@ -52,7 +52,7 @@ public class LogFilter implements Serializable {
         this.dataLength = dataLength;
     }
 
-    protected boolean matchesTags(LogEvent event) {
+    protected boolean matchesTags(Event event) {
         if (tags == null) {
             return true;
         }
@@ -67,7 +67,7 @@ public class LogFilter implements Serializable {
         return false;
     }
 
-    public boolean matches(LogEvent event) {
+    public boolean matches(Event event) {
         if ((event.time < begin) || (event.time >= end)) {
             return false;
         } else if ((logger != null) && (!logger.matcher(event.logger).matches())) {
@@ -76,8 +76,8 @@ public class LogFilter implements Serializable {
             return false;
         } else if (!matchesTags(event)) {
             return false;
-        } else if (event instanceof LogBinaryEvent) {
-            LogBinaryEvent dataEvent = (LogBinaryEvent) event;
+        } else if (event instanceof BinaryEvent) {
+            BinaryEvent dataEvent = (BinaryEvent) event;
             if ((dataType != null) && (!dataType.matcher(dataEvent.binaryType).matches())) {
                 return false;
             } else if ((dataLength >= 0) && (dataEvent.binaryData.length > dataLength)) {

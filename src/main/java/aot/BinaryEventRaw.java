@@ -19,7 +19,7 @@ package aot;
 
 import aot.util.cbor.CborUtil;
 import aot.util.json.JsonUtil;
-import aot.view.LogBinaryEvent;
+import aot.view.BinaryEvent;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -48,8 +48,8 @@ class BinaryEventRaw extends EventRaw {
     }
 
     @Override
-    public LogBinaryEvent toEvent(Stream stream) {
-        return new LogBinaryEvent(time,
+    public BinaryEvent toEvent(Stream stream) {
+        return new BinaryEvent(time,
                                   stream.getString(level),
                                   stream.getString(logger),
                                   message,

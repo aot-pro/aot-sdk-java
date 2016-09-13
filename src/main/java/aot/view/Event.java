@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class LogEvent implements Serializable, Binariable, Comparable<LogEvent> {
+public class Event implements Serializable, Binariable, Comparable<Event> {
     private static final long serialVersionUID = 1;
 
     public final long time;
@@ -40,11 +40,11 @@ public class LogEvent implements Serializable, Binariable, Comparable<LogEvent> 
     public final Map<String, String> tags;
 
     @JsonCreator
-    public LogEvent(@JsonProperty("time") long time,
-                    @JsonProperty("level") String level,
-                    @JsonProperty("logger") String logger,
-                    @JsonProperty("message") String message,
-                    @JsonProperty("tags") Map<String, String> tags) {
+    public Event(@JsonProperty("time") long time,
+                 @JsonProperty("level") String level,
+                 @JsonProperty("logger") String logger,
+                 @JsonProperty("message") String message,
+                 @JsonProperty("tags") Map<String, String> tags) {
         this.time = time;
         this.level = level;
         this.logger = logger;
@@ -53,7 +53,7 @@ public class LogEvent implements Serializable, Binariable, Comparable<LogEvent> 
     }
 
     @Override
-    public int compareTo(LogEvent event) {
+    public int compareTo(Event event) {
         if (time < event.time) {
             return -1;
         } else if (time > event.time) {
@@ -73,11 +73,11 @@ public class LogEvent implements Serializable, Binariable, Comparable<LogEvent> 
         return JsonUtil.toString(this);
     }
 
-    public static LogEvent valueOf(byte[] bytes) {
-        return CborUtil.fromBytes(bytes, LogEvent.class);
+    public static Event valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, Event.class);
     }
 
-    public static LogEvent valueOf(String string) {
-        return JsonUtil.fromString(string, LogEvent.class);
+    public static Event valueOf(String string) {
+        return JsonUtil.fromString(string, Event.class);
     }
 }

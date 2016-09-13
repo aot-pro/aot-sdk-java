@@ -17,8 +17,6 @@
 
 package aot.view;
 
-import java.util.Iterator;
-
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
@@ -26,14 +24,14 @@ import java.util.Iterator;
 public class Instance {
     protected final Version version;
     protected final String id;
-    protected final Log log;
-    protected final Stat stat;
+    protected final LogView logView;
+    protected final StatView statView;
 
     protected Instance(Version version, String id) {
         this.version = version;
         this.id = id;
-        this.log = new Log(this);
-        this.stat = new Stat(this);
+        this.logView = new LogView(this);
+        this.statView = new StatView(this);
     }
 
     public Version getVersion() {
@@ -44,11 +42,11 @@ public class Instance {
         return id;
     }
 
-    public Log getLog() {
-        return log;
+    public LogView getLogView() {
+        return logView;
     }
 
-    public Stat getStat() {
-        return stat;
+    public StatView getStatView() {
+        return statView;
     }
 }

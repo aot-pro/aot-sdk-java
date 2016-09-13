@@ -17,25 +17,18 @@
 
 package aot.view;
 
-import java.util.Iterator;
-
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Log implements Iterable<LogLayer> {
+public class StatView {
     protected final Instance instance;
 
-    protected Log(Instance instance) {
+    protected StatView(Instance instance) {
         this.instance = instance;
     }
 
     public Instance getInstance() {
         return instance;
-    }
-
-    @Override
-    public Iterator<LogLayer> iterator() {
-        return null;
     }
 }

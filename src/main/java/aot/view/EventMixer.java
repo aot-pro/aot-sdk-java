@@ -23,17 +23,17 @@ import java.util.Arrays;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class LogMixer implements LogEventIterator {
-    protected final LogEventIterator[] iterators;
+public class EventMixer implements EventIterator {
+    protected final EventIterator[] iterators;
     protected final boolean[] head;
     protected final boolean[] tail;
-    protected final LogEvent[] events;
+    protected final Event[] events;
 
-    public LogMixer(LogEventIterator[] iterators) {
+    public EventMixer(EventIterator[] iterators) {
         this.iterators = iterators.clone();
         this.head = new boolean[this.iterators.length];
         this.tail = new boolean[this.iterators.length];
-        this.events = new LogEvent[this.iterators.length];
+        this.events = new Event[this.iterators.length];
 
         Arrays.fill(this.head, true);
         Arrays.fill(this.tail, false);
@@ -41,13 +41,13 @@ public class LogMixer implements LogEventIterator {
 
     @Override
     public boolean hasPrev() {
-        for (LogEventIterator it : iterators) {
+        for (EventIterator it : iterators) {
         }
         return false;
     }
 
     @Override
-    public LogEvent prev() {
+    public Event prev() {
         return null;
     }
 
@@ -57,7 +57,7 @@ public class LogMixer implements LogEventIterator {
     }
 
     @Override
-    public LogEvent next() {
+    public Event next() {
         return null;
     }
 
