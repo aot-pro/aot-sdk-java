@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
 /**
@@ -106,6 +107,8 @@ public class EventStream implements Iterable<Event> {
                 while (offset < size) {
                     if (EventStream.this.getType(offset) >= 3) {
                         return true;
+                    } else {
+                        offset = skip(offset);
                     }
                 }
                 return false;
@@ -113,7 +116,11 @@ public class EventStream implements Iterable<Event> {
 
             @Override
             public Event next() {
-                return EventStream.this.getEvent(offset);
+                if (hasNext()) {
+                    return EventStream.this.getEvent(offset);
+                } else {
+                    throw new NoSuchElementException(String.format("Event is not found at offset '%d' of size '%d'", offset, size));
+                }
             }
         };
     }
