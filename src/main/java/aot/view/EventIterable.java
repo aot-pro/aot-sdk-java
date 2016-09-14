@@ -22,5 +22,6 @@ package aot.view;
  * @since 1.0
  */
 public interface EventIterable extends Iterable<Event> {
+    public EventFilter filter();
     public EventIterator iterator();
 }

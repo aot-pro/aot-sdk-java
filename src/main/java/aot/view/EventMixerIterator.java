@@ -17,32 +17,30 @@
 
 package aot.view;
 
-import java.util.Arrays;
-
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class EventMixer implements EventIterator {
+public class EventMixerIterator implements EventIterator {
+    protected final EventFilter filter;
     protected final EventIterator[] iterators;
-    protected final boolean[] head;
-    protected final boolean[] tail;
-    protected final Event[] events;
+    protected final Event[] prevEvents;
+    protected final Event[] nextEvents;
 
-    public EventMixer(EventIterator[] iterators) {
-        this.iterators = iterators.clone();
-        this.head = new boolean[this.iterators.length];
-        this.tail = new boolean[this.iterators.length];
-        this.events = new Event[this.iterators.length];
+    public EventMixerIterator(EventFilter filter, EventIterator[] iterators) {
+        this.filter = filter;
+        this.iterators = iterators;
+        this.prevEvents = new Event[iterators.length];
+        this.nextEvents = new Event[iterators.length];
+    }
 
-        Arrays.fill(this.head, true);
-        Arrays.fill(this.tail, false);
+    @Override
+    public EventFilter filter() {
+        return filter;
     }
 
     @Override
     public boolean hasPrev() {
-        for (EventIterator it : iterators) {
-        }
         return false;
     }
 
@@ -59,9 +57,5 @@ public class EventMixer implements EventIterator {
     @Override
     public Event next() {
         return null;
-    }
-
-    @Override
-    public void remove() {
     }
 }

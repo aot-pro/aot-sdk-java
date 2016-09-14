@@ -17,14 +17,26 @@
 
 package aot.view;
 
-import java.util.Iterator;
-
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public interface EventIterator extends Iterator<Event> {
-    public EventFilter filter();
-    public boolean hasPrev();
-    public Event prev();
+public class EventMixerIterable implements EventIterable {
+    protected final EventFilter filter;
+    protected final EventIterable[] iterables;
+
+    public EventMixerIterable(EventFilter filter, EventIterable[] iterables) {
+        this.filter = filter;
+        this.iterables = iterables;
+    }
+
+    @Override
+    public EventFilter filter() {
+        return filter;
+    }
+
+    @Override
+    public EventIterator iterator() {
+        return null;
+    }
 }
