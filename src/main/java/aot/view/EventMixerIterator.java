@@ -17,6 +17,8 @@
 
 package aot.view;
 
+import java.util.NoSuchElementException;
+
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
@@ -56,6 +58,33 @@ public class EventMixerIterator implements EventIterator {
 
     @Override
     public Event next() {
-        return null;
+        int min = -1;
+        Event minEvent = null;
+        for (int i = 0, ci = nextEvents.length; i < ci; ++i) {
+            Event nextEvent = nextEvents[i];
+            if (nextEvent != null) {
+                if (minEvent != null) {
+                    if (nextEvent.compareTo(minEvent) < 0) {
+                        min = i;
+                        minEvent = nextEvent;
+                    }
+                } else {
+                    min = i;
+                    minEvent = nextEvent;
+                }
+            }
+        }
+        if (minEvent != null) {
+            EventIterator iterator = iterators[min];
+            if (iterator.hasNext()) {
+                nextEvents[min] = iterator.next();
+            } else {
+                nextEvents[min] = null;
+            }
+            prevEvents[min] = minEvent;
+            return minEvent;
+        } else {
+            throw new NoSuchElementException("Next event is not found");
+        }
     }
 }
