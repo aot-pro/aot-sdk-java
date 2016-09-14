@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-class BinaryEvent extends Event {
+public class BinaryEvent extends Event {
     private static final long serialVersionUID = 1;
 
     public final int binaryType;

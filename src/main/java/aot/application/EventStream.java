@@ -21,6 +21,7 @@ import aot.util.cbor.CborUtil;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -28,13 +29,31 @@ import java.util.TreeMap;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-final class EventStream {
-    private final HashMap<Integer, String> strings = new HashMap<>(4096);
-    private final HashMap<Integer, Map<String, String>> tags = new HashMap<>(4096);
-    private final ByteBuffer buffer;
+public class EventStream implements Iterable<Event> {
+    protected final HashMap<Integer, String> strings = new HashMap<>(4096);
+    protected final HashMap<Integer, Map<String, String>> tags = new HashMap<>(4096);
+    protected final ByteBuffer buffer;
 
-    EventStream(byte[] buffer) {
+    public EventStream(byte[] buffer) {
         this.buffer = ByteBuffer.wrap(buffer);
+    }
+
+    public int skip(int offset) {
+        return offset + 5 + getLength(offset);
+    }
+
+    public byte getType(int offset) {
+        return buffer.get(offset);
+    }
+
+    public int getLength(int offset) {
+        return buffer.getInt(offset + 1);
+    }
+
+    public byte[] getBytes(int offset) {
+        byte[] bytes = new byte[getLength(offset)];
+        System.arraycopy(buffer.array(), offset + 5, bytes, 0, bytes.length);
+        return bytes;
     }
 
     public String getString(int offset) {
@@ -57,5 +76,45 @@ final class EventStream {
             tags.put(offset, ts);
         }
         return ts;
+    }
+
+    public Event getEvent(int offset) {
+        byte type = getType(offset);
+        if (type == 3) {
+            return Event.valueOf(getBytes(offset));
+        } else if (type == 4) {
+            return BinaryEvent.valueOf(getBytes(offset));
+        } else if (type == 5) {
+            return null;
+        } else if (type == 6) {
+            return null;
+        } else if (type == 7) {
+            return null;
+        } else {
+            throw new EventTypeNotFoundException(String.format("Event type '%d' is not found", type));
+        }
+    }
+
+    @Override
+    public Iterator<Event> iterator() {
+        return new Iterator<Event>() {
+            private int offset = 24;
+            private final int size = EventStream.this.buffer.array().length;
+
+            @Override
+            public boolean hasNext() {
+                while (offset < size) {
+                    if (EventStream.this.getType(offset) >= 3) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public Event next() {
+                return EventStream.this.getEvent(offset);
+            }
+        };
     }
 }

@@ -29,7 +29,7 @@ import java.io.Serializable;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-class Event implements Serializable, Binariable {
+public class Event implements Serializable, Binariable {
     private static final long serialVersionUID = 1;
 
     public final long time;
