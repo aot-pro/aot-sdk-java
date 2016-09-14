@@ -21,7 +21,7 @@ package aot.view;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class LogFile {
+public class LogFile implements EventSource {
     protected final LogMinute minute;
     protected final String id;
 
@@ -36,5 +36,10 @@ public class LogFile {
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public EventIterable getEvents(EventFilter filter) {
+        return null;
     }
 }

@@ -23,7 +23,7 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Application implements Iterable<Version> {
+public class Application implements Iterable<Version>, EventSource {
     protected final Environment environment;
     protected final String id;
 
@@ -42,6 +42,11 @@ public class Application implements Iterable<Version> {
 
     @Override
     public Iterator<Version> iterator() {
+        return null;
+    }
+
+    @Override
+    public EventIterable getEvents(EventFilter filter) {
         return null;
     }
 }

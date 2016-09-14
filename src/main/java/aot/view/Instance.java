@@ -21,7 +21,7 @@ package aot.view;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Instance {
+public class Instance implements EventSource {
     protected final Version version;
     protected final String id;
     protected final LogView logView;
@@ -48,5 +48,10 @@ public class Instance {
 
     public StatView getStatView() {
         return statView;
+    }
+
+    @Override
+    public EventIterable getEvents(EventFilter filter) {
+        return null;
     }
 }

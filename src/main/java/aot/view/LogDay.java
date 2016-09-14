@@ -23,7 +23,7 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class LogDay implements Iterable<LogHour> {
+public class LogDay implements Iterable<LogHour>, EventSource {
     protected final LogMonth month;
     protected final String id;
 
@@ -42,6 +42,11 @@ public class LogDay implements Iterable<LogHour> {
 
     @Override
     public Iterator<LogHour> iterator() {
+        return null;
+    }
+
+    @Override
+    public EventIterable getEvents(EventFilter filter) {
         return null;
     }
 }

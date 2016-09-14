@@ -25,7 +25,7 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Environment implements Iterable<Application> {
+public class Environment implements Iterable<Application>, EventSource {
     protected final Storage configStorage;
     protected final Storage dataStorage;
 
@@ -44,6 +44,11 @@ public class Environment implements Iterable<Application> {
 
     @Override
     public Iterator<Application> iterator() {
+        return null;
+    }
+
+    @Override
+    public EventIterable getEvents(EventFilter filter) {
         return null;
     }
 }

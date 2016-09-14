@@ -23,7 +23,7 @@ import java.util.Iterator;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class LogView implements Iterable<LogLayer> {
+public class LogView implements Iterable<LogLayer>, EventSource {
     protected final Instance instance;
 
     protected LogView(Instance instance) {
@@ -36,6 +36,11 @@ public class LogView implements Iterable<LogLayer> {
 
     @Override
     public Iterator<LogLayer> iterator() {
+        return null;
+    }
+
+    @Override
+    public EventIterable getEvents(EventFilter filter) {
         return null;
     }
 }
