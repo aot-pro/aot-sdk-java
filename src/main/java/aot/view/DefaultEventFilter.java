@@ -17,6 +17,10 @@
 
 package aot.view;
 
+import aot.util.binary.Binariable;
+import aot.util.cbor.CborUtil;
+import aot.util.json.JsonUtil;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -25,7 +29,7 @@ import java.util.regex.Pattern;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Filter implements Serializable {
+public class DefaultEventFilter implements Serializable, Binariable, EventFilter {
     private static final long serialVersionUID = 1;
 
     public final long begin;
@@ -36,13 +40,13 @@ public class Filter implements Serializable {
     public final Pattern dataType;
     public final int dataLength;
 
-    public Filter(long begin,
-                  long end,
-                  Pattern logger,
-                  Pattern message,
-                  List<Tag> tags,
-                  Pattern dataType,
-                  int dataLength) {
+    public DefaultEventFilter(long begin,
+                              long end,
+                              Pattern logger,
+                              Pattern message,
+                              List<Tag> tags,
+                              Pattern dataType,
+                              int dataLength) {
         this.begin = begin;
         this.end = end;
         this.logger = logger;
@@ -67,7 +71,18 @@ public class Filter implements Serializable {
         return false;
     }
 
-    public boolean matches(Event event) {
+    @Override
+    public long getBeginTime() {
+        return begin;
+    }
+
+    @Override
+    public long getEndTime() {
+        return end;
+    }
+
+    @Override
+    public boolean matchEvent(Event event) {
         if ((event.time < begin) || (event.time >= end)) {
             return false;
         } else if ((logger != null) && (!logger.matcher(event.logger).matches())) {
@@ -85,6 +100,24 @@ public class Filter implements Serializable {
             }
         }
         return true;
+    }
+
+    @Override
+    public byte[] toBytes() {
+        return CborUtil.toBytes(this);
+    }
+
+    @Override
+    public String toString() {
+        return JsonUtil.toString(this);
+    }
+
+    public static DefaultEventFilter valueOf(byte[] bytes) {
+        return CborUtil.fromBytes(bytes, DefaultEventFilter.class);
+    }
+
+    public static DefaultEventFilter valueOf(String string) {
+        return JsonUtil.fromString(string, DefaultEventFilter.class);
     }
 
     public static class Tag implements Serializable {

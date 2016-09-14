@@ -21,6 +21,8 @@ package aot.view;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public interface EventSource {
-    public EventIterable getEvents(EventFilter filter);
+public interface EventFilter {
+    public long getBeginTime();
+    public long getEndTime();
+    public boolean matchEvent(Event event);
 }
