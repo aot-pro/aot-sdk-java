@@ -40,7 +40,7 @@ public class LogView implements Iterable<LogLayer>, EventSource {
     }
 
     @Override
-    public EventIterable getEvents(EventFilter filter) {
+    public Iterable<Event> getEvents(EventFilter filter) {
         return null;
     }
 }

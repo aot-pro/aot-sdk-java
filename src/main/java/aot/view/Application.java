@@ -46,7 +46,7 @@ public class Application implements Iterable<Version>, EventSource {
     }
 
     @Override
-    public EventIterable getEvents(EventFilter filter) {
+    public Iterable<Event> getEvents(EventFilter filter) {
         return null;
     }
 }

@@ -22,5 +22,5 @@ package aot.view;
  * @since 1.0
  */
 public interface EventSource {
-    public EventIterable getEvents(EventFilter filter);
+    public Iterable<Event> getEvents(EventFilter filter);
 }
