@@ -27,25 +27,21 @@ import java.util.NoSuchElementException;
  */
 public class EventMixer implements Iterable<Event> {
     protected final EventFilter filter;
-    protected final Iterable<Event>[] iterables;
+    protected final EventSource[] sources;
 
     public <T extends EventSource> EventMixer(EventFilter filter, Iterable<T> sources) {
-        this(filter, createIterables(filter, sources));
-    }
-
-    public EventMixer(EventFilter filter, Iterable<Event>[] iterables) {
         this.filter = filter;
-        this.iterables = iterables;
+        this.sources = toArray(sources);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Iterator<Event> iterator() {
-        final Iterator<Event>[] iters = new Iterator[iterables.length];
+        final Iterator<Event>[] iters = new Iterator[sources.length];
         int eventCount = 0;
-        Event[] events = new Event[iterables.length];
-        for (int i = 0, ci = iterables.length; i < ci; ++i) {
-            Iterator<Event> iter = iterables[i].iterator();
+        Event[] events = new Event[sources.length];
+        for (int i = 0, ci = sources.length; i < ci; ++i) {
+            Iterator<Event> iter = sources[i].getEvents(filter).iterator();
             iters[i] = iter;
             if (iter.hasNext()) {
                 eventCount++;
@@ -105,12 +101,11 @@ public class EventMixer implements Iterable<Event> {
         };
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends EventSource> Iterable<Event>[] createIterables(EventFilter filter, Iterable<T> sources) {
-        LinkedList<Iterable<Event>> iterables = new LinkedList<>();
+    private static <T extends EventSource> EventSource[] toArray(Iterable<T> sources) {
+        LinkedList<EventSource> list = new LinkedList<>();
         for (EventSource source : sources) {
-            iterables.add(source.getEvents(filter));
+            list.add(source);
         }
-        return iterables.toArray(new Iterable[iterables.size()]);
+        return list.toArray(new EventSource[list.size()]);
     }
 }
