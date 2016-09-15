@@ -49,6 +49,6 @@ public class Environment implements Iterable<Application>, EventSource {
 
     @Override
     public Iterable<Event> getEvents(EventFilter filter) {
-        return null;
+        return new EventMixer(filter, this);
     }
 }

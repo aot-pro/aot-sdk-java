@@ -47,6 +47,6 @@ public class Version implements Iterable<Instance>, EventSource {
 
     @Override
     public Iterable<Event> getEvents(EventFilter filter) {
-        return null;
+        return new EventMixer(filter, this);
     }
 }

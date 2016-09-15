@@ -41,6 +41,6 @@ public class LogView implements Iterable<LogLayer>, EventSource {
 
     @Override
     public Iterable<Event> getEvents(EventFilter filter) {
-        return null;
+        return new EventMixer(filter, this);
     }
 }

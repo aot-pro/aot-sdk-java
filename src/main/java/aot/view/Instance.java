@@ -52,6 +52,6 @@ public class Instance implements EventSource {
 
     @Override
     public Iterable<Event> getEvents(EventFilter filter) {
-        return null;
+        return logView.getEvents(filter);
     }
 }

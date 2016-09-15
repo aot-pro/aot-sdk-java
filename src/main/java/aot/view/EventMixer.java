@@ -18,6 +18,7 @@
 package aot.view;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 /**
@@ -28,11 +29,16 @@ public class EventMixer implements Iterable<Event> {
     protected final EventFilter filter;
     protected final Iterable<Event>[] iterables;
 
+    public <T extends EventSource> EventMixer(EventFilter filter, Iterable<T> sources) {
+        this(filter, createIterables(filter, sources));
+    }
+
     public EventMixer(EventFilter filter, Iterable<Event>[] iterables) {
         this.filter = filter;
         this.iterables = iterables;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Iterator<Event> iterator() {
         final Iterator<Event>[] iters = new Iterator[iterables.length];
@@ -97,5 +103,14 @@ public class EventMixer implements Iterable<Event> {
                 }
             }
         };
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends EventSource> Iterable<Event>[] createIterables(EventFilter filter, Iterable<T> sources) {
+        LinkedList<Iterable<Event>> iterables = new LinkedList<>();
+        for (EventSource source : sources) {
+            iterables.add(source.getEvents(filter));
+        }
+        return iterables.toArray(new Iterable[iterables.size()]);
     }
 }
