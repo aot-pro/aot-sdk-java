@@ -34,6 +34,14 @@ public class EventMixer implements Iterable<Event> {
         this.sources = toArray(sources);
     }
 
+    public EventFilter getFilter() {
+        return filter;
+    }
+
+    public EventSource[] getSources() {
+        return sources;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Iterator<Event> iterator() {
