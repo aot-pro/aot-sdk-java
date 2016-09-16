@@ -38,10 +38,6 @@ public class EventMixer implements Iterable<Event> {
         return filter;
     }
 
-    public EventSource[] getSources() {
-        return sources;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public Iterator<Event> iterator() {
