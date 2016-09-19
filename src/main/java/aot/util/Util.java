@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @since 1.0
  */
 public final class Util {
-    public static final Charset CHARSET = Charset.forName("UTF-8");
+    public static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
 
     private static final Object sleep = new Object();
     private static final AtomicLong threads = new AtomicLong(0);

@@ -20,30 +20,46 @@ package aot.util.time;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
 public final class TimeUtil {
+    public static final TimeZone TIMEZONE_UTC = TimeZone.getTimeZone("UTC");
+
     private TimeUtil() {
     }
 
-    public static long microTime() {
+    public static long currentMicro() {
         return System.nanoTime() / 1000L;
     }
 
-    public static Timestamp currentTime() {
+    public static Timestamp currentTimestamp() {
         return new Timestamp(System.currentTimeMillis());
     }
 
-    public static String formatTime(long time) {
+    public static String format(long time) {
         return String.format("%1$tY.%1$tm.%1$td %1$tH:%1$tM:%1$tS.%1$tL", time);
     }
 
+    public static String formatPath(long time) {
+        Calendar calendar = new GregorianCalendar(TIMEZONE_UTC);
+        calendar.setTimeInMillis(time);
+        return String.format("/%d/%02d/%02d/%02d/%02d/%02d",
+                             calendar.get(Calendar.YEAR),
+                             calendar.get(Calendar.MONTH) + 1,
+                             calendar.get(Calendar.DAY_OF_MONTH),
+                             calendar.get(Calendar.HOUR),
+                             calendar.get(Calendar.MINUTE),
+                             calendar.get(Calendar.SECOND));
+    }
+
     public static String formatMicroSpan(long time) {
-        final long timeHigh = time / 1000L;
-        final long timeLow = time % 1000L;
+        long timeHigh = time / 1000L;
+        long timeLow = time % 1000L;
         return String.format("%d.%03d", timeHigh, timeLow);
     }
 
@@ -65,8 +81,8 @@ public final class TimeUtil {
     public static Integer getAge(Date dateOfBirth) {
         try {
             if (dateOfBirth != null) {
-                Calendar today = Calendar.getInstance();
-                Calendar birthDate = Calendar.getInstance();
+                Calendar today = new GregorianCalendar(TIMEZONE_UTC);
+                Calendar birthDate = new GregorianCalendar(TIMEZONE_UTC);
                 birthDate.setTime(dateOfBirth);
                 int age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
                 if (age > 0) {

@@ -61,4 +61,14 @@ public final class StringUtil {
             return null;
         }
     }
+
+    public static String getCommonPrefix(String value1, String value2) {
+        int minLength = Math.min(value1.length(), value2.length());
+        for (int i = 0; i < minLength; ++i) {
+            if (value1.charAt(i) != value2.charAt(i)) {
+                return value1.substring(0, i);
+            }
+        }
+        return value1.substring(0, minLength);
+    }
 }

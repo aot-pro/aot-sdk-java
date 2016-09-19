@@ -17,6 +17,10 @@
 
 package aot.view;
 
+import aot.storage.Storage;
+import aot.util.string.StringUtil;
+import aot.util.time.TimeUtil;
+
 import java.util.Iterator;
 
 /**
@@ -25,10 +29,12 @@ import java.util.Iterator;
  */
 public class Layer implements Iterable<LogFile>, EventSource {
     protected final Instance instance;
+    protected final Storage storage;
     protected final String id;
 
     protected Layer(Instance instance, String id) {
         this.instance = instance;
+        this.storage = null;
         this.id = id;
     }
 
@@ -36,8 +42,19 @@ public class Layer implements Iterable<LogFile>, EventSource {
         return instance;
     }
 
+    public Storage getStorage() {
+        return storage;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public Iterable<LogFile> getFiles(long beginTime, long endTime) {
+        String beginTimePath = TimeUtil.formatPath(beginTime);
+        String endTimePath = TimeUtil.formatPath(endTime);
+        String timePath = StringUtil.getCommonPrefix(beginTimePath, endTimePath);
+        return null;
     }
 
     @Override
