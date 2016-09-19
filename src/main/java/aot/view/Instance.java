@@ -24,14 +24,10 @@ package aot.view;
 public class Instance implements EventSource {
     protected final Version version;
     protected final String id;
-    protected final LogView logView;
-    protected final StatView statView;
 
     protected Instance(Version version, String id) {
         this.version = version;
         this.id = id;
-        this.logView = new LogView(this);
-        this.statView = new StatView(this);
     }
 
     public Version getVersion() {
@@ -42,16 +38,8 @@ public class Instance implements EventSource {
         return id;
     }
 
-    public LogView getLogView() {
-        return logView;
-    }
-
-    public StatView getStatView() {
-        return statView;
-    }
-
     @Override
     public Iterable<Event> getEvents(EventFilter filter) {
-        return logView.getEvents(filter);
+        return null;
     }
 }

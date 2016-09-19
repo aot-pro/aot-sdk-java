@@ -22,16 +22,16 @@ package aot.view;
  * @since 1.0
  */
 public class LogFile implements EventSource {
-    protected final LogMinute minute;
+    protected final Layer layer;
     protected final String id;
 
-    protected LogFile(LogMinute minute, String id) {
-        this.minute = minute;
+    protected LogFile(Layer layer, String id) {
+        this.layer = layer;
         this.id = id;
     }
 
-    public LogMinute getMinute() {
-        return minute;
+    public Layer getLayer() {
+        return layer;
     }
 
     public String getId() {
