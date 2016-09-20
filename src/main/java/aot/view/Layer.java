@@ -22,6 +22,8 @@ import aot.util.string.StringUtil;
 import aot.util.time.TimeUtil;
 
 import java.util.Iterator;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * @author Dmitry Kotlyarov
@@ -50,11 +52,34 @@ public class Layer implements Iterable<LogFile>, EventSource {
         return id;
     }
 
-    public Iterable<LogFile> getFiles(long beginTime, long endTime) {
+    public TreeMap<Long, LogFile> getFiles(long beginTime, long endTime) {
         String beginTimePath = TimeUtil.formatPath(beginTime);
         String endTimePath = TimeUtil.formatPath(endTime);
         String timePath = StringUtil.getCommonPrefix(beginTimePath, endTimePath);
-        return null;
+        TreeMap<Long, LogFile> files = new TreeMap<>();
+        for (String path = beginTimePath; true; path = path.substring(0, path.lastIndexOf("/"))) {
+            LogFile minFile = null;
+            for (String fileId : storage.find(path)) {
+                LogFile file = new LogFile(this, fileId);
+                if (file.getTime() < beginTime) {
+                    if ((minFile == null) || (file.getTime() > minFile.getTime())) {
+                        minFile = file;
+                    }
+                }
+            }
+            if (minFile != null) {
+                files.put(minFile.getTime(), minFile);
+                break;
+            }
+            if (path.isEmpty()) {
+                break;
+            }
+        }
+        for (String fileId : storage.find(timePath)) {
+            LogFile file = new LogFile(this, fileId);
+            files.put(file.getTime(), file);
+        }
+        return files;
     }
 
     @Override

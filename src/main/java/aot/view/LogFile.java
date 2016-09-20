@@ -24,10 +24,12 @@ package aot.view;
 public class LogFile implements EventSource {
     protected final Layer layer;
     protected final String id;
+    protected final long time;
 
     protected LogFile(Layer layer, String id) {
         this.layer = layer;
         this.id = id;
+        this.time = 0;
     }
 
     public Layer getLayer() {
@@ -36,6 +38,10 @@ public class LogFile implements EventSource {
 
     public String getId() {
         return id;
+    }
+
+    public long getTime() {
+        return time;
     }
 
     @Override
