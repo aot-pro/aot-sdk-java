@@ -17,6 +17,8 @@
 
 package aot.view;
 
+import aot.storage.Storage;
+
 import java.util.Iterator;
 
 /**
@@ -26,10 +28,12 @@ import java.util.Iterator;
 public class Application implements Iterable<Version>, EventSource {
     protected final Environment environment;
     protected final String id;
+    protected final Storage storage;
 
     protected Application(Environment environment, String id) {
         this.environment = environment;
         this.id = id;
+        this.storage = environment.getDataStorage().substorage(String.format("/%s", id));
     }
 
     public Environment getEnvironment() {
@@ -38,6 +42,10 @@ public class Application implements Iterable<Version>, EventSource {
 
     public String getId() {
         return id;
+    }
+
+    public Storage getStorage() {
+        return storage;
     }
 
     @Override

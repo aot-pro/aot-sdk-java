@@ -17,17 +17,23 @@
 
 package aot.view;
 
+import aot.storage.Storage;
+
+import java.util.Iterator;
+
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class Instance implements EventSource {
+public class Instance implements Iterable<Layer>, EventSource {
     protected final Version version;
     protected final String id;
+    protected final Storage storage;
 
     protected Instance(Version version, String id) {
         this.version = version;
         this.id = id;
+        this.storage = version.getStorage().substorage(String.format("/%s", id));
     }
 
     public Version getVersion() {
@@ -36,6 +42,15 @@ public class Instance implements EventSource {
 
     public String getId() {
         return id;
+    }
+
+    public Storage getStorage() {
+        return storage;
+    }
+
+    @Override
+    public Iterator<Layer> iterator() {
+        return null;
     }
 
     @Override

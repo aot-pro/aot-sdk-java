@@ -31,25 +31,25 @@ import java.util.TreeSet;
  */
 public class Layer implements Iterable<LogFile>, EventSource {
     protected final Instance instance;
-    protected final Storage storage;
     protected final String id;
+    protected final Storage storage;
 
     protected Layer(Instance instance, String id) {
         this.instance = instance;
-        this.storage = null;
         this.id = id;
+        this.storage = instance.getStorage().substorage(String.format("/%s", id));
     }
 
     public Instance getInstance() {
         return instance;
     }
 
-    public Storage getStorage() {
-        return storage;
-    }
-
     public String getId() {
         return id;
+    }
+
+    public Storage getStorage() {
+        return storage;
     }
 
     public TreeMap<Long, LogFile> getFiles() {
