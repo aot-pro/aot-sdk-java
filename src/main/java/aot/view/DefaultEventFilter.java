@@ -72,6 +72,26 @@ public class DefaultEventFilter implements Serializable, Binariable, EventFilter
     }
 
     @Override
+    public String getApplication() {
+        return null;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
+    @Override
+    public String getInstance() {
+        return null;
+    }
+
+    @Override
+    public String getLayer() {
+        return null;
+    }
+
+    @Override
     public long getBeginTime() {
         return begin;
     }

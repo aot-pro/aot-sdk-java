@@ -22,6 +22,10 @@ package aot.view;
  * @since 1.0
  */
 public interface EventFilter {
+    public String getApplication();
+    public String getVersion();
+    public String getInstance();
+    public String getLayer();
     public long getBeginTime();
     public long getEndTime();
     public boolean matchEvent(Event event);
