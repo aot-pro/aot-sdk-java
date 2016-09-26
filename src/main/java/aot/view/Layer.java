@@ -52,6 +52,15 @@ public class Layer implements Iterable<LogFile>, EventSource {
         return id;
     }
 
+    public TreeMap<Long, LogFile> getFiles() {
+        TreeMap<Long, LogFile> files = new TreeMap<>();
+        for (String fileId : storage.find("")) {
+            LogFile file = new LogFile(this, fileId);
+            files.put(file.getTime(), file);
+        }
+        return files;
+    }
+
     public TreeMap<Long, LogFile> getFiles(long beginTime, long endTime) {
         String beginTimePath = TimeUtil.formatPath(beginTime);
         String endTimePath = TimeUtil.formatPath(endTime);
@@ -84,11 +93,13 @@ public class Layer implements Iterable<LogFile>, EventSource {
 
     @Override
     public Iterator<LogFile> iterator() {
-        return null;
+        TreeMap<Long, LogFile> files = getFiles();
+        return files.values().iterator();
     }
 
     @Override
     public Iterable<Event> getEvents(EventFilter filter) {
-        return null;
+        TreeMap<Long, LogFile> files = getFiles(filter.getBeginTime(), filter.getEndTime());
+        return new EventStream(filter, files.values());
     }
 }
