@@ -93,13 +93,11 @@ public class Layer implements Iterable<LogFile>, EventSource {
 
     @Override
     public Iterator<LogFile> iterator() {
-        TreeMap<Long, LogFile> files = getFiles();
-        return files.values().iterator();
+        return getFiles().values().iterator();
     }
 
     @Override
     public Iterable<Event> getEvents(EventFilter filter) {
-        TreeMap<Long, LogFile> files = getFiles(filter.getBeginTime(), filter.getEndTime());
-        return new EventStream(filter, files.values());
+        return new EventStream(filter, getFiles(filter.getBeginTime(), filter.getEndTime()).values());
     }
 }
