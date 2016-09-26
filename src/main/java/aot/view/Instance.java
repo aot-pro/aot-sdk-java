@@ -20,6 +20,7 @@ package aot.view;
 import aot.storage.Storage;
 
 import java.util.Iterator;
+import java.util.TreeMap;
 
 /**
  * @author Dmitry Kotlyarov
@@ -48,13 +49,26 @@ public class Instance implements Iterable<Layer>, EventSource {
         return storage;
     }
 
+    public TreeMap<String, Layer> getLayers() {
+        return getLayers(null);
+    }
+
+    public TreeMap<String, Layer> getLayers(String filter) {
+        TreeMap<String, Layer> layers = new TreeMap<>();
+        for (String layerId : storage.find("", filter)) {
+            Layer layer = new Layer(this, layerId);
+            layers.put(layer.getId(), layer);
+        }
+        return layers;
+    }
+
     @Override
     public Iterator<Layer> iterator() {
-        return null;
+        return getLayers().values().iterator();
     }
 
     @Override
     public Iterable<Event> getEvents(EventFilter filter) {
-        return null;
+        return new EventMixer(filter, getLayers(filter.getLayer()).values());
     }
 }
