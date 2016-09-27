@@ -48,13 +48,14 @@ public final class TimeUtil {
     public static String formatPath(long time) {
         Calendar calendar = new GregorianCalendar(TIMEZONE_UTC);
         calendar.setTimeInMillis(time);
-        return String.format("/%d/%02d/%02d/%02d/%02d/%02d",
+        return String.format("/%04d/%02d/%02d/%02d/%02d/%02d/%03d",
                              calendar.get(Calendar.YEAR),
                              calendar.get(Calendar.MONTH) + 1,
                              calendar.get(Calendar.DAY_OF_MONTH),
                              calendar.get(Calendar.HOUR),
                              calendar.get(Calendar.MINUTE),
-                             calendar.get(Calendar.SECOND));
+                             calendar.get(Calendar.SECOND),
+                             calendar.get(Calendar.MILLISECOND));
     }
 
     public static String formatMicroSpan(long time) {
