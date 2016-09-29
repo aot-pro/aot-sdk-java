@@ -23,11 +23,11 @@ package aot.util.thread;
  */
 public class ThreadLock implements AutoCloseable {
     public ThreadLock() {
-        ThreadUtil.lockThread();
+        ThreadUtil.lock();
     }
 
     @Override
     public void close() throws Exception {
-        ThreadUtil.unlockThread();
+        ThreadUtil.unlock();
     }
 }

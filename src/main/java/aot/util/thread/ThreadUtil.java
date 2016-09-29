@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public final class ThreadUtil {
     private static final Object sleep = new Object();
-    private static final AtomicLong threads = new AtomicLong(0);
+    private static final AtomicLong threads = new AtomicLong(0L);
     private static final AtomicBoolean shutdown = new AtomicBoolean(false);
 
     private ThreadUtil() {
@@ -36,9 +36,16 @@ public final class ThreadUtil {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
+                shutdown();
+                synchronized (sleep) {
+                    sleep.notifyAll();
+                }
                 while (threads.get() > 0L) {
+                    synchronized (sleep) {
+                        sleep.notifyAll();
+                    }
                     try {
-                        Thread.sleep(1000L);
+                        Thread.sleep(100L);
                     } catch (InterruptedException e) {
                     }
                 }
@@ -46,29 +53,44 @@ public final class ThreadUtil {
         });
     }
 
-    public static long lockThread() {
+    public static long lock() {
         return threads.incrementAndGet();
     }
 
-    public static long unlockThread() {
+    public static long unlock() {
         return threads.decrementAndGet();
     }
 
     public static void sleep(long timeout) {
         if (!shutdown.get()) {
-            synchronized (sleep) {
-                try {
+            try {
+                synchronized (sleep) {
                     sleep.wait(timeout);
-                } catch (InterruptedException e) {
-                    if (!shutdown.get()) {
-                        throw new ThreadInterruptedException(e);
-                    } else {
-                        throw new ThreadShutdownException(e);
-                    }
                 }
+            } catch (InterruptedException e) {
+                if (!shutdown.get()) {
+                    throw new ThreadInterruptedException(e);
+                } else {
+                    throw new ThreadShutdownException(e);
+                }
+            }
+            if (shutdown.get()) {
+                throw new ThreadShutdownException();
             }
         } else {
             throw new ThreadShutdownException();
         }
+    }
+
+    public static boolean getShutdown() {
+        return shutdown.get();
+    }
+
+    public static boolean shutdown() {
+        boolean s = shutdown.get();
+        if (!s) {
+            shutdown.compareAndSet(false, true);
+        }
+        return s;
     }
 }
