@@ -15,29 +15,19 @@
  * limitations under the License.
  */
 
-package aot.util;
+package aot.util.thread;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class ShutdownException extends RuntimeException {
-    public ShutdownException() {
+public class ThreadLock implements AutoCloseable {
+    public ThreadLock() {
+        ThreadUtil.lockThread();
     }
 
-    public ShutdownException(String message) {
-        super(message);
-    }
-
-    public ShutdownException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ShutdownException(Throwable cause) {
-        super(cause);
-    }
-
-    public ShutdownException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    @Override
+    public void close() throws Exception {
+        ThreadUtil.unlockThread();
     }
 }

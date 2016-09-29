@@ -15,29 +15,29 @@
  * limitations under the License.
  */
 
-package aot.util;
+package aot.util.thread;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class InterruptedRuntimeException extends RuntimeException {
-    public InterruptedRuntimeException() {
+public class ThreadShutdownException extends RuntimeException {
+    public ThreadShutdownException() {
     }
 
-    public InterruptedRuntimeException(String message) {
+    public ThreadShutdownException(String message) {
         super(message);
     }
 
-    public InterruptedRuntimeException(String message, Throwable cause) {
+    public ThreadShutdownException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InterruptedRuntimeException(Throwable cause) {
+    public ThreadShutdownException(Throwable cause) {
         super(cause);
     }
 
-    public InterruptedRuntimeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public ThreadShutdownException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

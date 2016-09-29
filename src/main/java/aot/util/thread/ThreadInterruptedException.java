@@ -15,28 +15,29 @@
  * limitations under the License.
  */
 
-package aot.util;
-
-import java.nio.charset.Charset;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
+package aot.util.thread;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public final class Util {
-    public static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
-
-    private Util() {
+public class ThreadInterruptedException extends RuntimeException {
+    public ThreadInterruptedException() {
     }
 
-    public static String randomUUID() {
-        return UUID.randomUUID().toString();
+    public ThreadInterruptedException(String message) {
+        super(message);
     }
 
-    public static <T> String formatClassName(Class<T> clazz) {
-        return clazz.getName().replace('.', '/');
+    public ThreadInterruptedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ThreadInterruptedException(Throwable cause) {
+        super(cause);
+    }
+
+    public ThreadInterruptedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }
