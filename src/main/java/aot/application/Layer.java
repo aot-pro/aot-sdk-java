@@ -33,7 +33,7 @@ final class Layer {
 
     public Layer(String id, int size) {
         this.id = id;
-        this.buffer1 = new Buffer(size, null);
-        this.buffer2 = new Buffer(size, null);
+        this.buffer1 = new Buffer(size);
+        this.buffer2 = new Buffer(size);
     }
 }
