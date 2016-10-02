@@ -20,6 +20,7 @@ package aot.storage;
 import aot.util.cbor.CborUtil;
 import aot.util.json.JsonUtil;
 import aot.util.map.MapUtil;
+import aot.util.xml.XmlUtil;
 
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
@@ -72,7 +73,7 @@ public abstract class Storage {
     }
 
     public <T> T getXml(String key, Class<T> type) {
-        return null;
+        return XmlUtil.fromBytes(get(key), type);
     }
 
     public static Storage createStorage(String id) {
