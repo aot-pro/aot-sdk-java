@@ -37,13 +37,7 @@ public final class ThreadUtil {
             @Override
             public void run() {
                 shutdown();
-                synchronized (sleep) {
-                    sleep.notifyAll();
-                }
                 while (threads.get() > 0L) {
-                    synchronized (sleep) {
-                        sleep.notifyAll();
-                    }
                     try {
                         Thread.sleep(100L);
                     } catch (InterruptedException e) {
@@ -51,6 +45,31 @@ public final class ThreadUtil {
                 }
             }
         });
+    }
+
+    public static void sleep(long timeout) {
+        if (!shutdown.get()) {
+            try {
+                synchronized (sleep) {
+                    if (!shutdown.get()) {
+                        sleep.wait(timeout);
+                        if (shutdown.get()) {
+                            throw new ThreadShutdownException();
+                        }
+                    } else {
+                        throw new ThreadShutdownException();
+                    }
+                }
+            } catch (InterruptedException e) {
+                if (!shutdown.get()) {
+                    throw new ThreadInterruptedException(e);
+                } else {
+                    throw new ThreadShutdownException(e);
+                }
+            }
+        } else {
+            throw new ThreadShutdownException();
+        }
     }
 
     public static long lock() {
@@ -61,36 +80,23 @@ public final class ThreadUtil {
         return threads.decrementAndGet();
     }
 
-    public static void sleep(long timeout) {
-        if (!shutdown.get()) {
-            try {
-                synchronized (sleep) {
-                    sleep.wait(timeout);
-                }
-            } catch (InterruptedException e) {
-                if (!shutdown.get()) {
-                    throw new ThreadInterruptedException(e);
-                } else {
-                    throw new ThreadShutdownException(e);
-                }
-            }
-            if (shutdown.get()) {
-                throw new ThreadShutdownException();
-            }
-        } else {
-            throw new ThreadShutdownException();
-        }
-    }
-
-    public static boolean getShutdown() {
+    public static boolean isShutdown() {
         return shutdown.get();
     }
 
     public static boolean shutdown() {
-        boolean s = shutdown.get();
-        if (!s) {
-            shutdown.compareAndSet(false, true);
+        if (!shutdown.get()) {
+            synchronized (sleep) {
+                if (!shutdown.get()) {
+                    shutdown.set(true);
+                    sleep.notifyAll();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return false;
         }
-        return s;
     }
 }
