@@ -35,7 +35,7 @@ final class Buffer {
     private final int size;
     private final ByteBuffer buffer;
     private final Storage storage;
-    private long begin;
+    private long beginTime;
     private final ConcurrentHashMap<String, Integer> strings = new ConcurrentHashMap<>(4096);
     private final ThreadLocal<ThreadTags> threadTags = new ThreadLocal<ThreadTags>() {
         @Override
@@ -48,7 +48,7 @@ final class Buffer {
         this.size = size;
         this.buffer = ByteBuffer.allocate(size);
         this.storage = storage;
-        this.begin = System.currentTimeMillis();
+        this.beginTime = System.currentTimeMillis();
     }
 
     public int log(String logger, String message, long tagsRevision, Map<String, String> tags) {
@@ -94,6 +94,14 @@ final class Buffer {
 
     private int putEvent(Event event) {
         return putBytes((byte) 3, event.toBytes());
+    }
+
+    public boolean upload(long time, long span) {
+        if (time >= beginTime + span) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private static final class ThreadTags {
