@@ -17,6 +17,9 @@
 
 package aot.application;
 
+import aot.util.thread.ThreadLock;
+import aot.util.thread.ThreadUtil;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,6 +39,20 @@ public final class Log {
     };
 
     private Log() {
+    }
+
+    static {
+        Thread t = new Thread("aot-application-log") {
+            @Override
+            public void run() {
+                try (ThreadLock tl = new ThreadLock()) {
+                    while (!ThreadUtil.isShutdown()) {
+                    }
+                }
+            }
+        };
+        t.setDaemon(false);
+        t.start();
     }
 
     public static void log(String channel, String module, String message) {
