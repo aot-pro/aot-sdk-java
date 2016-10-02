@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-final class EventBuffer {
+final class Buffer {
     private final AtomicInteger offset = new AtomicInteger(24);
     private final int size;
     private final ByteBuffer buffer;
@@ -44,7 +44,7 @@ final class EventBuffer {
         }
     };
 
-    public EventBuffer(int size, Storage storage) {
+    public Buffer(int size, Storage storage) {
         this.size = size;
         this.buffer = ByteBuffer.allocate(size);
         this.storage = storage;
@@ -64,7 +64,7 @@ final class EventBuffer {
             System.arraycopy(bytes, 0, buffer.array(), o + 5, bytes.length);
             return o;
         } else {
-            throw new EventBufferException();
+            throw new BufferException();
         }
     }
 

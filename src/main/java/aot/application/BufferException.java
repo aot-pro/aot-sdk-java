@@ -21,9 +21,9 @@ package aot.application;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-final class EventBufferException extends RuntimeException {
+final class BufferException extends RuntimeException {
     private static final long serialVersionUID = 1;
 
-    public EventBufferException() {
+    public BufferException() {
     }
 }
