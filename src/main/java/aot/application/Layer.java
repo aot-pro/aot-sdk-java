@@ -17,6 +17,7 @@
 
 package aot.application;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -35,5 +36,31 @@ final class Layer {
         this.id = id;
         this.buffer1 = new Buffer(size);
         this.buffer2 = new Buffer(size);
+    }
+
+    public void log(String logger, String message, long tagsRevision, Map<String, String> tags) {
+        if (bufferFlag.get()) {
+            try {
+                buffer1.log(logger, message, tagsRevision, tags);
+            } catch (BufferException e1) {
+                try {
+                    buffer2.log(logger, message, tagsRevision, tags);
+                    bufferFlag.set(false);
+                } catch (BufferException e2) {
+                    lost.incrementAndGet();
+                }
+            }
+        } else {
+            try {
+                buffer2.log(logger, message, tagsRevision, tags);
+            } catch (BufferException e2) {
+                try {
+                    buffer1.log(logger, message, tagsRevision, tags);
+                    bufferFlag.set(true);
+                } catch (BufferException e1) {
+                    lost.incrementAndGet();
+                }
+            }
+        }
     }
 }
