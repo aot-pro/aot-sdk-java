@@ -19,9 +19,13 @@ package aot.application;
 
 import aot.storage.Storage;
 import aot.util.cbor.CborUtil;
+import aot.util.io.IOUtil;
 import aot.util.map.MapUtil;
+import aot.util.time.TimeUtil;
 
 import java.nio.ByteBuffer;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,9 +36,11 @@ import java.util.concurrent.atomic.AtomicLong;
  * @since 1.0
  */
 final class Buffer {
+    private final AtomicInteger threads = new AtomicInteger(0);
     private final AtomicInteger offset = new AtomicInteger(24);
-    private final int size;
-    private final ByteBuffer buffer;
+    private final AtomicInteger size = new AtomicInteger(24);
+    private final int capacity;
+    private final ByteBuffer data;
     private final AtomicLong beginTime = new AtomicLong(Long.MAX_VALUE);
     private final ConcurrentHashMap<String, Integer> strings = new ConcurrentHashMap<>(4096);
     private final ThreadLocal<ThreadTags> threadTags = new ThreadLocal<ThreadTags>() {
@@ -44,27 +50,37 @@ final class Buffer {
         }
     };
 
-    public Buffer(int size) {
-        this.size = size;
-        this.buffer = ByteBuffer.allocate(size);
+    public Buffer(int capacity) {
+        this.capacity = capacity;
+        this.data = ByteBuffer.allocate(capacity);
     }
 
     public int log(String logger, String message, long tagsRevision, Map<String, String> tags) {
-        long t = System.currentTimeMillis();
-        int o = putEvent(new Event(t, putString(logger), message, putTags(tagsRevision, tags)));
-        for (long bt = beginTime.get(); t < bt; bt = beginTime.get()) {
-            beginTime.compareAndSet(bt, t);
+        if (offset.get() < capacity) {
+            threads.incrementAndGet();
+            try {
+                long t = System.currentTimeMillis();
+                int o = putEvent(new Event(t, putString(logger), message, putTags(tagsRevision, tags)));
+                for (long bt = beginTime.get(); t < bt; bt = beginTime.get()) {
+                    beginTime.compareAndSet(bt, t);
+                }
+                return o;
+            } finally {
+                threads.decrementAndGet();
+            }
+        } else {
+            throw new BufferException();
         }
-        return o;
     }
 
     private int putBytes(byte type, byte[] bytes) {
         int l = bytes.length + 5;
         int o = offset.getAndAdd(l);
-        if (o + l <= size) {
-            buffer.put(o, type);
-            buffer.putInt(o + 1, bytes.length);
-            System.arraycopy(bytes, 0, buffer.array(), o + 5, bytes.length);
+        if (o + l < capacity) {
+            size.getAndAdd(l);
+            data.put(o, type);
+            data.putInt(o + 1, bytes.length);
+            System.arraycopy(bytes, 0, data.array(), o + 5, bytes.length);
             return o;
         } else {
             throw new BufferException();
@@ -99,13 +115,45 @@ final class Buffer {
         return putBytes((byte) 3, event.toBytes());
     }
 
-    public boolean upload(long time, long span) {
-        if (time >= beginTime.get() + span) {
-            offset.getAndAdd(size);
+    public boolean upload(Storage storage, long time, long span, AtomicLong lost) {
+        if (time - span >= beginTime.get()) {
+            offset.getAndAdd(capacity);
         }
-        if (offset.get() >= size) {
+        if (offset.get() >= capacity) {
+            while (threads.get() > 0) {
+                try {
+                    Thread.sleep(100L);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            long bt = beginTime.get();
+            int s = size.get();
+            long l = lost.getAndSet(0L);
+            data.putInt(0, 0x4C4F4720);
+            data.putLong(4, bt);
+            data.putInt(12, s);
+            data.putLong(16, l);
+            Calendar calendar = new GregorianCalendar(TimeUtil.TIMEZONE_UTC);
+            calendar.setTimeInMillis(bt);
+            String key = String.format("/%04d/%02d/%02d/%02d/%02d/%02d/%03d/%d-%d-%d-%d.log",
+                                       calendar.get(Calendar.YEAR),
+                                       calendar.get(Calendar.MONTH) + 1,
+                                       calendar.get(Calendar.DAY_OF_MONTH),
+                                       calendar.get(Calendar.HOUR),
+                                       calendar.get(Calendar.MINUTE),
+                                       calendar.get(Calendar.SECOND),
+                                       calendar.get(Calendar.MILLISECOND),
+                                       bt, s, 0, l);
+            storage.put(key, IOUtil.compress(data.array(), 0, s));
+            strings.clear();
+            beginTime.set(Long.MAX_VALUE);
+            size.set(24);
+            offset.set(24);
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private static final class ThreadTags {
