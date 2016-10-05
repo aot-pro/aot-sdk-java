@@ -30,11 +30,11 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public final class Log {
     private static final AtomicReference<Config> config = new AtomicReference<>(null);
-    private static final AtomicReference<Map<String, Layer>> layers = new AtomicReference<>(null);
-    private static final ThreadLocal<LinkedHashMap<String, String>> tags = new ThreadLocal<LinkedHashMap<String, String>>() {
+    private static final AtomicReference<LinkedHashMap<String, Layer>> layers = new AtomicReference<>(null);
+    private static final ThreadLocal<ThreadInfo> threadInfo = new ThreadLocal<ThreadInfo>() {
         @Override
-        protected LinkedHashMap<String, String> initialValue() {
-            return new LinkedHashMap<>();
+        protected ThreadInfo initialValue() {
+            return new ThreadInfo();
         }
     };
 
@@ -55,20 +55,46 @@ public final class Log {
         t.start();
     }
 
-    public static void log(String channel, String module, String message) {
+    public static void log(String layer, String logger, String message) {
+        Layer l = Log.layers.get().get(layer);
+        if (l != null) {
+            ThreadInfo ti = Log.threadInfo.get();
+            l.log(logger, ti.shift, ti.tagsRevision, ti.tags, message);
+        }
     }
 
     public static boolean addTag(String key, String value) {
-        LinkedHashMap<String, String> tags = Log.tags.get();
-        if (!tags.containsKey(key)) {
-            tags.put(key, value);
+        ThreadInfo ti = Log.threadInfo.get();
+        if (!ti.tags.containsKey(key)) {
+            ti.tags.put(key, value);
+            if (ti.tagsRevision < Long.MAX_VALUE) {
+                ti.tagsRevision++;
+            } else {
+                ti.tagsRevision = 0L;
+            }
             return true;
         } else {
             return false;
         }
     }
 
-    public static void removeTag(String key) {
-        Log.tags.get().remove(key);
+    public static boolean removeTag(String key) {
+        ThreadInfo ti = Log.threadInfo.get();
+        if (ti.tags.remove(key) != null) {
+            if (ti.tagsRevision < Long.MAX_VALUE) {
+                ti.tagsRevision++;
+            } else {
+                ti.tagsRevision = 0L;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static final class ThreadInfo {
+        public short shift = 0;
+        public long tagsRevision = 0L;
+        public final LinkedHashMap<String, String> tags = new LinkedHashMap<>();
     }
 }
