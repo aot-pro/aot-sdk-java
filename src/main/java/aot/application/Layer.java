@@ -32,19 +32,19 @@ final class Layer {
     private final AtomicBoolean bufferFlag = new AtomicBoolean(true);
     private final AtomicLong lost = new AtomicLong(0L);
 
-    public Layer(String id, int size) {
+    public Layer(String id, int capacity) {
         this.id = id;
-        this.buffer1 = new Buffer(size);
-        this.buffer2 = new Buffer(size);
+        this.buffer1 = new Buffer(capacity);
+        this.buffer2 = new Buffer(capacity);
     }
 
-    public void log(String logger, String message, long tagsRevision, Map<String, String> tags) {
+    public void log(String logger, short shift, long tagsRevision, Map<String, String> tags, String message) {
         if (bufferFlag.get()) {
             try {
-                buffer1.log(logger, message, tagsRevision, tags);
+                buffer1.log(logger, shift, tagsRevision, tags, message);
             } catch (BufferException e1) {
                 try {
-                    buffer2.log(logger, message, tagsRevision, tags);
+                    buffer2.log(logger, shift, tagsRevision, tags, message);
                     bufferFlag.set(false);
                 } catch (BufferException e2) {
                     lost.incrementAndGet();
@@ -52,10 +52,10 @@ final class Layer {
             }
         } else {
             try {
-                buffer2.log(logger, message, tagsRevision, tags);
+                buffer2.log(logger, shift, tagsRevision, tags, message);
             } catch (BufferException e2) {
                 try {
-                    buffer1.log(logger, message, tagsRevision, tags);
+                    buffer1.log(logger, shift, tagsRevision, tags, message);
                     bufferFlag.set(true);
                 } catch (BufferException e1) {
                     lost.incrementAndGet();
