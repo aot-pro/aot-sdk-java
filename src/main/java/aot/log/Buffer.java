@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot.application;
+package aot.log;
 
 import aot.storage.Storage;
 import aot.util.Util;
@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-final class Buffer {
+public final class Buffer {
     private final AtomicInteger threads = new AtomicInteger(0);
     private final AtomicInteger offset = new AtomicInteger(24);
     private final AtomicInteger size = new AtomicInteger(24);
@@ -116,7 +116,7 @@ final class Buffer {
         long time = System.currentTimeMillis();
         if (o + l < capacity) {
             size.getAndAdd(l);
-            dataBuffer.put(o, ElementType.EVENT.id);
+            dataBuffer.put(o, BufferElementType.EVENT.id);
             dataBuffer.putInt(o + 1, l - 5);
             dataBuffer.putLong(o + 5, time);
             dataBuffer.putInt(o + 13, logger);

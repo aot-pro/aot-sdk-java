@@ -17,6 +17,9 @@
 
 package aot.application;
 
+import aot.log.Buffer;
+import aot.log.BufferException;
+
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;

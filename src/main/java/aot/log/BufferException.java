@@ -15,25 +15,15 @@
  * limitations under the License.
  */
 
-package aot.application;
+package aot.log;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public enum ElementType {
-    TAGS((byte) -2),
-    STRING((byte) -1),
-    END((byte) 0),
-    EVENT((byte) 1),
-    BINARY_EVENT((byte) 2),
-    EXCEPTION_EVENT((byte) 3),
-    START_EVENT((byte) 4),
-    FINISH_EVENT((byte) 5);
+public final class BufferException extends RuntimeException {
+    private static final long serialVersionUID = 1;
 
-    public final byte id;
-
-    ElementType(byte id) {
-        this.id = id;
+    public BufferException() {
     }
 }
