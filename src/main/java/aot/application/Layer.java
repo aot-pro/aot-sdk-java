@@ -44,10 +44,10 @@ final class Layer {
     public void log(String logger, short shift, long tagsRevision, Map<String, String> tags, String message) {
         if (bufferFlag.get()) {
             try {
-                buffer1.log(logger, shift, tagsRevision, tags, message);
+                buffer1.log(System.currentTimeMillis(), logger, shift, tagsRevision, tags, message);
             } catch (BufferException e1) {
                 try {
-                    buffer2.log(logger, shift, tagsRevision, tags, message);
+                    buffer2.log(System.currentTimeMillis(), logger, shift, tagsRevision, tags, message);
                     bufferFlag.set(false);
                 } catch (BufferException e2) {
                     lost.incrementAndGet();
@@ -55,10 +55,10 @@ final class Layer {
             }
         } else {
             try {
-                buffer2.log(logger, shift, tagsRevision, tags, message);
+                buffer2.log(System.currentTimeMillis(), logger, shift, tagsRevision, tags, message);
             } catch (BufferException e2) {
                 try {
-                    buffer1.log(logger, shift, tagsRevision, tags, message);
+                    buffer1.log(System.currentTimeMillis(), logger, shift, tagsRevision, tags, message);
                     bufferFlag.set(true);
                 } catch (BufferException e1) {
                     lost.incrementAndGet();

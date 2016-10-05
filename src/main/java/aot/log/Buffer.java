@@ -58,11 +58,11 @@ public final class Buffer {
         this.dataArray = dataBuffer.array();
     }
 
-    public int log(String logger, short shift, long tagsRevision, Map<String, String> tags, String message) {
+    public int log(long time, String logger, short shift, long tagsRevision, Map<String, String> tags, String message) {
         if (offset.get() < capacity) {
             threads.incrementAndGet();
             try {
-                return putEvent(putString(logger), shift, putTags(tagsRevision, tags), message);
+                return putEvent(time, putString(logger), shift, putTags(tagsRevision, tags), message);
             } finally {
                 threads.decrementAndGet();
             }
@@ -109,11 +109,10 @@ public final class Buffer {
         return tts.offset;
     }
 
-    private int putEvent(int logger, short shift, int tags, String message) {
+    private int putEvent(long time, int logger, short shift, int tags, String message) {
         byte[] md = message.getBytes(StringUtil.CHARSET_UTF8);
         int l = md.length + 23;
         int o = offset.getAndAdd(l);
-        long time = System.currentTimeMillis();
         if (o + l < capacity) {
             size.getAndAdd(l);
             dataBuffer.put(o, BufferElementType.EVENT.id);
