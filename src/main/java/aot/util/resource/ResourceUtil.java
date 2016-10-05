@@ -18,7 +18,7 @@
 package aot.util.resource;
 
 import aot.util.NotFoundException;
-import aot.util.Util;
+import aot.util.string.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +62,7 @@ public final class ResourceUtil {
     public static String findAsString(Class clazz, String name) {
         byte[] b = findAsBytes(clazz, name);
         if (b != null) {
-            return new String(b, Util.CHARSET_UTF8);
+            return new String(b, StringUtil.CHARSET_UTF8);
         } else {
             return null;
         }

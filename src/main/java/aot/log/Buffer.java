@@ -18,10 +18,10 @@
 package aot.log;
 
 import aot.storage.Storage;
-import aot.util.Util;
 import aot.util.cbor.CborUtil;
 import aot.util.io.IOUtil;
 import aot.util.map.MapUtil;
+import aot.util.string.StringUtil;
 import aot.util.time.TimeUtil;
 
 import java.nio.ByteBuffer;
@@ -110,7 +110,7 @@ public final class Buffer {
     }
 
     private int putEvent(int logger, short shift, int tags, String message) {
-        byte[] md = message.getBytes(Util.CHARSET_UTF8);
+        byte[] md = message.getBytes(StringUtil.CHARSET_UTF8);
         int l = md.length + 23;
         int o = offset.getAndAdd(l);
         long time = System.currentTimeMillis();

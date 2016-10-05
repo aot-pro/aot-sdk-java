@@ -17,13 +17,7 @@
 
 package aot.view;
 
-import aot.util.cbor.CborUtil;
-import aot.util.json.JsonUtil;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Dmitry Kotlyarov

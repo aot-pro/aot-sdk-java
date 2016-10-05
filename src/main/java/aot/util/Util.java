@@ -17,18 +17,13 @@
 
 package aot.util;
 
-import java.nio.charset.Charset;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
 public final class Util {
-    public static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
-
     private Util() {
     }
 

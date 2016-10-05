@@ -18,12 +18,15 @@
 package aot.util.string;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
 public final class StringUtil {
+    public static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
+
     private StringUtil() {
     }
 
