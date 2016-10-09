@@ -17,6 +17,8 @@
 
 package aot.log;
 
+import java.util.LinkedHashMap;
+
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
@@ -31,9 +33,23 @@ public enum BufferElementType {
     START_EVENT((byte) 4),
     FINISH_EVENT((byte) 5);
 
+    private static final LinkedHashMap<Byte, BufferElementType> events = new LinkedHashMap<>(64);
+
     public final byte id;
 
     BufferElementType(byte id) {
         this.id = id;
+    }
+
+    static {
+        events.put(EVENT.id, EVENT);
+        events.put(BINARY_EVENT.id, BINARY_EVENT);
+        events.put(EXCEPTION_EVENT.id, EXCEPTION_EVENT);
+        events.put(START_EVENT.id, START_EVENT);
+        events.put(FINISH_EVENT.id, FINISH_EVENT);
+    }
+
+    public static boolean isEvent(Byte id) {
+        return events.containsKey(id);
     }
 }

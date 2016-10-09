@@ -36,9 +36,12 @@ import java.util.concurrent.atomic.AtomicLong;
  * @since 1.0
  */
 public final class Buffer {
+    private static final int DO = 40;
+
     private final AtomicInteger threads = new AtomicInteger(0);
-    private final AtomicInteger offset = new AtomicInteger(24);
-    private final AtomicInteger size = new AtomicInteger(24);
+    private final AtomicInteger events = new AtomicInteger(0);
+    private final AtomicInteger offset = new AtomicInteger(DO);
+    private final AtomicInteger size = new AtomicInteger(DO);
     private final int capacity;
     private final ByteBuffer dataBuffer;
     private final byte[] dataArray;
@@ -129,6 +132,9 @@ public final class Buffer {
             dataBuffer.putShort(o + 17, shift);
             dataBuffer.putInt(o + 19, tags);
             System.arraycopy(md, 0, dataArray, o + 23, md.length);
+            if (events.incrementAndGet() == 1) {
+                beginTime.set(time);
+            }
             return o;
         } else {
             throw new BufferException();
@@ -147,16 +153,33 @@ public final class Buffer {
                     throw new RuntimeException(e);
                 }
             }
-            long bt = beginTime.get();
+            long bt = Long.MAX_VALUE;
+            long et = Long.MIN_VALUE;
+            int es = events.get();
+            for (int i = 0, j = DO; i < es; j = j + 1 + dataBuffer.getInt(j + 1)) {
+                byte t = dataBuffer.get(j);
+                if (BufferElementType.isEvent(t)) {
+                    long evt = dataBuffer.getLong(j + 5);
+                    if (evt < bt) {
+                        bt = evt;
+                    }
+                    if (evt > et) {
+                        et = evt;
+                    }
+                }
+            }
             int s = size.get();
             long l = lost.getAndSet(0L);
             dataBuffer.putInt(0, 0x4C4F4720);
-            dataBuffer.putLong(4, bt);
-            dataBuffer.putInt(12, s);
-            dataBuffer.putLong(16, l);
+            dataBuffer.putInt(4, 0x00010000);
+            dataBuffer.putLong(8, bt);
+            dataBuffer.putLong(16, et);
+            dataBuffer.putInt(24, s);
+            dataBuffer.putInt(28, es);
+            dataBuffer.putLong(32, l);
             Calendar calendar = new GregorianCalendar(TimeUtil.TIMEZONE_UTC);
             calendar.setTimeInMillis(bt);
-            String key = String.format("/%04d/%02d/%02d/%02d/%02d/%02d/%03d/%d-%d-%d-%d.log",
+            String key = String.format("/%04d/%02d/%02d/%02d/%02d/%02d/%03d/%d-%d-%d-%d-%d.log",
                                        calendar.get(Calendar.YEAR),
                                        calendar.get(Calendar.MONTH) + 1,
                                        calendar.get(Calendar.DAY_OF_MONTH),
@@ -164,12 +187,13 @@ public final class Buffer {
                                        calendar.get(Calendar.MINUTE),
                                        calendar.get(Calendar.SECOND),
                                        calendar.get(Calendar.MILLISECOND),
-                                       bt, s, 0, l);
+                                       bt, et, s, es, l);
             storage.put(key, IOUtil.compress(dataArray, 0, s));
             strings.clear();
             beginTime.set(Long.MAX_VALUE);
-            size.set(24);
-            offset.set(24);
+            events.set(0);
+            size.set(DO);
+            offset.set(DO);
             return true;
         } else {
             return false;
