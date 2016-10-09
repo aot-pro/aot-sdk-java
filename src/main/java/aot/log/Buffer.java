@@ -18,7 +18,6 @@
 package aot.log;
 
 import aot.storage.Storage;
-import aot.util.cbor.CborUtil;
 import aot.util.io.IOUtil;
 import aot.util.map.MapUtil;
 import aot.util.string.StringUtil;
@@ -71,42 +70,50 @@ public final class Buffer {
         }
     }
 
-    private int putBytes(byte type, byte[] bytes) {
-        int l = bytes.length + 5;
-        int o = offset.getAndAdd(l);
-        if (o + l < capacity) {
-            size.getAndAdd(l);
-            dataBuffer.put(o, type);
-            dataBuffer.putInt(o + 1, bytes.length);
-            System.arraycopy(bytes, 0, dataBuffer.array(), o + 5, bytes.length);
-            return o;
-        } else {
-            throw new BufferException();
-        }
-    }
-
     private int putString(String string) {
-        Integer o = strings.get(string);
-        if (o == null) {
-            o = MapUtil.putIfAbsent(strings, string, putBytes((byte) 1, CborUtil.toBytes(string)));
+        Integer off = strings.get(string);
+        if (off == null) {
+            byte[] sd = string.getBytes(StringUtil.CHARSET_UTF8);
+            int l = sd.length + 5;
+            int o = offset.getAndAdd(l);
+            if (o + l < capacity) {
+                size.getAndAdd(l);
+                dataBuffer.put(o, BufferElementType.STRING.id);
+                dataBuffer.putInt(o + 1, l - 5);
+                System.arraycopy(sd, 0, dataArray, o + 5, sd.length);
+                return MapUtil.putIfAbsent(strings, string, o);
+            } else {
+                throw new BufferException();
+            }
+        } else {
+            return off;
         }
-        return o;
     }
 
     private int putTags(long tagsRevision, Map<String, String> tags) {
         ThreadTags tts = threadTags.get();
         if (tts.revision != tagsRevision) {
-            int[] tsi = new int[tags.size() * 2];
-            int i = 0;
-            for (Map.Entry<String, String> tag : tags.entrySet()) {
-                tsi[i] = putString(tag.getKey());
-                tsi[i + 1] = putString(tag.getValue());
-                i += 2;
+            int l = tags.size() * 4 * 2 + 5;
+            int o = offset.getAndAdd(l);
+            if (o + l < capacity) {
+                size.getAndAdd(l);
+                dataBuffer.put(o, BufferElementType.TAGS.id);
+                dataBuffer.putInt(o + 1, l - 5);
+                int i = 0;
+                for (Map.Entry<String, String> tag : tags.entrySet()) {
+                    dataBuffer.putInt(o + 5 + i, putString(tag.getKey()));
+                    dataBuffer.putInt(o + 5 + i + 1, putString(tag.getValue()));
+                    i += 2;
+                }
+                tts.revision = tagsRevision;
+                tts.offset = o;
+                return o;
+            } else {
+                throw new BufferException();
             }
-            tts.offset = putBytes((byte) 2, CborUtil.toBytes(tsi));
-            tts.revision = tagsRevision;
+        } else {
+            return tts.offset;
         }
-        return tts.offset;
     }
 
     private int putEvent(long time, int logger, short shift, int tags, String message) {
