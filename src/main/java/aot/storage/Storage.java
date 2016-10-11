@@ -18,6 +18,7 @@
 package aot.storage;
 
 import aot.util.cbor.CborUtil;
+import aot.util.jobj.JobjUtil;
 import aot.util.json.JsonUtil;
 import aot.util.map.MapUtil;
 import aot.util.xml.XmlUtil;
@@ -66,6 +67,10 @@ public abstract class Storage {
 
     public <T> T getCbor(String key, Class<T> type) {
         return CborUtil.fromBytes(get(key), type);
+    }
+
+    public <T> T getJobj(String key, Class<T> type) {
+        return JobjUtil.fromBytes(get(key), type);
     }
 
     public <T> T getJson(String key, Class<T> type) {
