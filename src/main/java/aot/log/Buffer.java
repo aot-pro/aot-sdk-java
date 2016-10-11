@@ -194,7 +194,11 @@ public final class Buffer {
             storage.put(key, IOUtil.compress(array, 0, s));
             strings.clear();
             begin.set(Long.MAX_VALUE);
-            revision.incrementAndGet();
+            if (revision.get() < Long.MAX_VALUE) {
+                revision.incrementAndGet();
+            } else {
+                revision.set(0L);
+            }
             events.set(0);
             size.set(OFFSET);
             offset.set(OFFSET);
