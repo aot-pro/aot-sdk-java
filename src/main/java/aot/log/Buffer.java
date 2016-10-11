@@ -36,16 +36,17 @@ import java.util.concurrent.atomic.AtomicLong;
  * @since 1.0
  */
 public final class Buffer {
-    private static final int DO = 40;
+    public static final int OFFSET = 40;
 
     private final AtomicInteger threads = new AtomicInteger(0);
     private final AtomicInteger events = new AtomicInteger(0);
-    private final AtomicInteger offset = new AtomicInteger(DO);
-    private final AtomicInteger size = new AtomicInteger(DO);
+    private final AtomicInteger offset = new AtomicInteger(OFFSET);
+    private final AtomicInteger size = new AtomicInteger(OFFSET);
     private final int capacity;
-    private final ByteBuffer dataBuffer;
-    private final byte[] dataArray;
-    private final AtomicLong beginTime = new AtomicLong(Long.MAX_VALUE);
+    private final ByteBuffer buffer;
+    private final byte[] array;
+    private final AtomicLong revision = new AtomicLong(0L);
+    private final AtomicLong begin = new AtomicLong(Long.MAX_VALUE);
     private final ConcurrentHashMap<String, Integer> strings = new ConcurrentHashMap<>(4096);
     private final ThreadLocal<ThreadTags> threadTags = new ThreadLocal<ThreadTags>() {
         @Override
@@ -56,8 +57,8 @@ public final class Buffer {
 
     public Buffer(int capacity) {
         this.capacity = capacity;
-        this.dataBuffer = ByteBuffer.allocate(capacity);
-        this.dataArray = dataBuffer.array();
+        this.buffer = ByteBuffer.allocate(capacity);
+        this.array = buffer.array();
     }
 
     public int log(long time, String logger, short shift, long tagsRevision, Map<String, String> tags, String message) {
@@ -81,9 +82,9 @@ public final class Buffer {
             int o = offset.getAndAdd(l);
             if (o + l < capacity) {
                 size.getAndAdd(l);
-                dataBuffer.put(o, BufferElementType.STRING.id);
-                dataBuffer.putInt(o + 1, l - 5);
-                System.arraycopy(sd, 0, dataArray, o + 5, sd.length);
+                buffer.put(o, BufferElementType.STRING.id);
+                buffer.putInt(o + 1, l - 5);
+                System.arraycopy(sd, 0, array, o + 5, sd.length);
                 return MapUtil.putIfAbsent(strings, string, o);
             } else {
                 throw new BufferException();
@@ -94,21 +95,23 @@ public final class Buffer {
     }
 
     private int putTags(long tagsRevision, Map<String, String> tags) {
+        long bufferRevision = revision.get();
         ThreadTags tts = threadTags.get();
-        if (tts.revision != tagsRevision) {
+        if ((tts.bufferRevision != bufferRevision) || (tts.tagsRevision != tagsRevision)) {
             int l = tags.size() * 4 * 2 + 5;
             int o = offset.getAndAdd(l);
             if (o + l < capacity) {
                 size.getAndAdd(l);
-                dataBuffer.put(o, BufferElementType.TAGS.id);
-                dataBuffer.putInt(o + 1, l - 5);
+                buffer.put(o, BufferElementType.TAGS.id);
+                buffer.putInt(o + 1, l - 5);
                 int i = 0;
                 for (Map.Entry<String, String> tag : tags.entrySet()) {
-                    dataBuffer.putInt(o + 5 + i, putString(tag.getKey()));
-                    dataBuffer.putInt(o + 5 + i + 1, putString(tag.getValue()));
+                    buffer.putInt(o + 5 + i, putString(tag.getKey()));
+                    buffer.putInt(o + 5 + i + 1, putString(tag.getValue()));
                     i += 2;
                 }
-                tts.revision = tagsRevision;
+                tts.bufferRevision = bufferRevision;
+                tts.tagsRevision = tagsRevision;
                 tts.offset = o;
                 return o;
             } else {
@@ -125,15 +128,15 @@ public final class Buffer {
         int o = offset.getAndAdd(l);
         if (o + l < capacity) {
             size.getAndAdd(l);
-            dataBuffer.put(o, BufferElementType.EVENT.id);
-            dataBuffer.putInt(o + 1, l - 5);
-            dataBuffer.putLong(o + 5, time);
-            dataBuffer.putInt(o + 13, logger);
-            dataBuffer.putShort(o + 17, shift);
-            dataBuffer.putInt(o + 19, tags);
-            System.arraycopy(md, 0, dataArray, o + 23, md.length);
+            buffer.put(o, BufferElementType.EVENT.id);
+            buffer.putInt(o + 1, l - 5);
+            buffer.putLong(o + 5, time);
+            buffer.putInt(o + 13, logger);
+            buffer.putShort(o + 17, shift);
+            buffer.putInt(o + 19, tags);
+            System.arraycopy(md, 0, array, o + 23, md.length);
             if (events.incrementAndGet() == 1) {
-                beginTime.set(time);
+                begin.set(time);
             }
             return o;
         } else {
@@ -142,7 +145,7 @@ public final class Buffer {
     }
 
     public boolean upload(Storage storage, long time, long span, AtomicLong lost) {
-        if (time - span >= beginTime.get()) {
+        if (time - span >= begin.get()) {
             offset.getAndAdd(capacity);
         }
         if (offset.get() >= capacity) {
@@ -153,32 +156,32 @@ public final class Buffer {
                     throw new RuntimeException(e);
                 }
             }
-            long bt = Long.MAX_VALUE;
-            long et = Long.MIN_VALUE;
+            long b = Long.MAX_VALUE;
+            long e = Long.MIN_VALUE;
             int es = events.get();
-            for (int i = 0, j = DO; i < es; j = j + 1 + dataBuffer.getInt(j + 1)) {
-                byte t = dataBuffer.get(j);
+            for (int i = 0, j = OFFSET; i < es; j = j + 1 + buffer.getInt(j + 1)) {
+                byte t = buffer.get(j);
                 if (BufferElementType.isEvent(t)) {
-                    long evt = dataBuffer.getLong(j + 5);
-                    if (evt < bt) {
-                        bt = evt;
+                    long evt = buffer.getLong(j + 5);
+                    if (evt < b) {
+                        b = evt;
                     }
-                    if (evt > et) {
-                        et = evt;
+                    if (evt > e) {
+                        e = evt;
                     }
                 }
             }
             int s = size.get();
             long l = lost.getAndSet(0L);
-            dataBuffer.putInt(0, 0x4C4F4720);
-            dataBuffer.putInt(4, 0x00010000);
-            dataBuffer.putLong(8, bt);
-            dataBuffer.putLong(16, et);
-            dataBuffer.putInt(24, s);
-            dataBuffer.putInt(28, es);
-            dataBuffer.putLong(32, l);
+            buffer.putInt(0, 0x4C4F4720);
+            buffer.putInt(4, 0x00010000);
+            buffer.putLong(8, b);
+            buffer.putLong(16, e);
+            buffer.putInt(24, s);
+            buffer.putInt(28, es);
+            buffer.putLong(32, l);
             Calendar calendar = new GregorianCalendar(TimeUtil.TIMEZONE_UTC);
-            calendar.setTimeInMillis(bt);
+            calendar.setTimeInMillis(b);
             String key = String.format("/%04d/%02d/%02d/%02d/%02d/%02d/%03d/%d-%d-%d-%d-%d.log",
                                        calendar.get(Calendar.YEAR),
                                        calendar.get(Calendar.MONTH) + 1,
@@ -187,13 +190,14 @@ public final class Buffer {
                                        calendar.get(Calendar.MINUTE),
                                        calendar.get(Calendar.SECOND),
                                        calendar.get(Calendar.MILLISECOND),
-                                       bt, et, s, es, l);
-            storage.put(key, IOUtil.compress(dataArray, 0, s));
+                                       b, e, s, es, l);
+            storage.put(key, IOUtil.compress(array, 0, s));
             strings.clear();
-            beginTime.set(Long.MAX_VALUE);
+            begin.set(Long.MAX_VALUE);
+            revision.incrementAndGet();
             events.set(0);
-            size.set(DO);
-            offset.set(DO);
+            size.set(OFFSET);
+            offset.set(OFFSET);
             return true;
         } else {
             return false;
@@ -201,7 +205,8 @@ public final class Buffer {
     }
 
     private static final class ThreadTags {
-        public long revision = 0;
-        public int offset = 0;
+        public long bufferRevision = -1L;
+        public long tagsRevision = -1L;
+        public int offset = -1;
     }
 }
