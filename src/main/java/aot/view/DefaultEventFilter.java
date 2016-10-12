@@ -17,9 +17,9 @@
 
 package aot.view;
 
-import aot.util.binary.Binariable;
-import aot.util.cbor.CborUtil;
-import aot.util.json.JsonUtil;
+import aot.util.Binariable;
+import aot.util.CborUtil;
+import aot.util.JsonUtil;
 
 import java.io.Serializable;
 import java.util.List;

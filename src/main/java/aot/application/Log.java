@@ -17,8 +17,8 @@
 
 package aot.application;
 
-import aot.util.thread.ThreadLock;
-import aot.util.thread.ThreadUtil;
+import aot.util.ThreadLock;
+import aot.util.ThreadUtil;
 
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicReference;

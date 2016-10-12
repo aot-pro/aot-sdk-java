@@ -17,7 +17,7 @@
 
 package aot.view;
 
-import aot.util.time.TimeUtil;
+import aot.util.TimeUtil;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

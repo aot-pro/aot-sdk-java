@@ -17,11 +17,11 @@
 
 package aot.storage;
 
-import aot.util.cbor.CborUtil;
-import aot.util.jobj.JobjUtil;
-import aot.util.json.JsonUtil;
-import aot.util.map.MapUtil;
-import aot.util.xml.XmlUtil;
+import aot.util.CborUtil;
+import aot.util.JobjUtil;
+import aot.util.JsonUtil;
+import aot.util.MapUtil;
+import aot.util.XmlUtil;
 
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;

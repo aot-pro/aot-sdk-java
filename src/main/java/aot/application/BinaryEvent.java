@@ -17,8 +17,8 @@
 
 package aot.application;
 
-import aot.util.cbor.CborUtil;
-import aot.util.json.JsonUtil;
+import aot.util.CborUtil;
+import aot.util.JsonUtil;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

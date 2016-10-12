@@ -18,8 +18,8 @@
 package aot.application;
 
 import aot.storage.Storage;
-import aot.util.manifest.ManifestUtil;
-import aot.util.net.NetUtil;
+import aot.util.ManifestUtil;
+import aot.util.NetUtil;
 
 /**
  * @author Dmitry Kotlyarov
