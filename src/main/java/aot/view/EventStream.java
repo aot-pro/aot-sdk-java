@@ -46,6 +46,11 @@ public class EventStream implements Iterable<Event> {
                     public EventSource next() {
                         return iterator.next();
                     }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException("remove");
+                    }
                 };
             }
         };
@@ -90,6 +95,11 @@ public class EventStream implements Iterable<Event> {
                 } else {
                     throw new NoSuchElementException("Next event is not found");
                 }
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
             }
         };
     }

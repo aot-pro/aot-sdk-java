@@ -102,6 +102,11 @@ public class EventMixer implements Iterable<Event> {
                     throw new NoSuchElementException("Next event is not found");
                 }
             }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
         };
     }
 

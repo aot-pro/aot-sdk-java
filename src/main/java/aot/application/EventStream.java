@@ -122,6 +122,11 @@ public class EventStream implements Iterable<Event> {
                     throw new NoSuchElementException(String.format("Event is not found at offset '%d' of size '%d'", offset, size));
                 }
             }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
         };
     }
 }
