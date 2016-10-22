@@ -81,11 +81,11 @@ public abstract class Storage {
 
     public abstract InputStream getStream(String key, Map<String, String> meta);
 
-    public long copy(String key, OutputStream output) {
-        return copy(key, output, null);
+    public long download(String key, OutputStream output) {
+        return download(key, output, null);
     }
 
-    public long copy(String key, OutputStream output, Map<String, String> meta) {
+    public long download(String key, OutputStream output, Map<String, String> meta) {
         long size = 0L;
         try (InputStream input = getStream(key, meta)) {
             int len = 0;
@@ -100,7 +100,18 @@ public abstract class Storage {
         return size;
     }
 
-    public abstract void put(String key, byte[] data);
+    public void put(String key, byte[] data) {
+        put(key, data, null);
+    }
+
+    public abstract void put(String key, byte[] data, Map<String, String> meta);
+
+    public void upload(String key, InputStream input, long size) {
+        upload(key, input, size, null);
+    }
+
+    public abstract void upload(String key, InputStream input, long size, Map<String, String> meta);
+
     public abstract void delete(String key);
 
     public abstract String url(String key);
