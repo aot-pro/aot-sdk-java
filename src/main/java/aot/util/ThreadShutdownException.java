@@ -22,6 +22,8 @@ package aot.util;
  * @since 1.0
  */
 public class ThreadShutdownException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
     public ThreadShutdownException() {
     }
 

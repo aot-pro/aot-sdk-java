@@ -30,7 +30,7 @@ import java.io.Serializable;
  * @since 1.0
  */
 public class Event implements Serializable, Binariable {
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 1L;
 
     public final long time;
     public final int logger;

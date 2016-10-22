@@ -15,31 +15,31 @@
  * limitations under the License.
  */
 
-package aot.util;
+package aot.storage;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class ThreadInterruptedException extends RuntimeException {
+public class StorageException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public ThreadInterruptedException() {
+    public StorageException() {
     }
 
-    public ThreadInterruptedException(String message) {
+    public StorageException(String message) {
         super(message);
     }
 
-    public ThreadInterruptedException(String message, Throwable cause) {
+    public StorageException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ThreadInterruptedException(Throwable cause) {
+    public StorageException(Throwable cause) {
         super(cause);
     }
 
-    public ThreadInterruptedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public StorageException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

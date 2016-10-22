@@ -23,7 +23,11 @@ import aot.util.JsonUtil;
 import aot.util.MapUtil;
 import aot.util.XmlUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
@@ -53,16 +57,52 @@ public abstract class Storage {
 
     public abstract Storage substorage(String prefix);
 
-    public abstract Iterable<String> find(String prefix);
-    public abstract Iterable<String> find(String prefix, String filter);
-    public abstract Iterable<String> find(String prefix, Pattern filter);
+    public Iterable<String> find(String prefix) {
+        return find(prefix, null);
+    }
 
-    public abstract byte[] get(String key);
+    public abstract Iterable<String> find(String prefix, String filter);
+
+    public Iterable<String> list(String prefix) {
+        return list(prefix, null);
+    }
+
+    public abstract Iterable<String> list(String prefix, String filter);
+
+    public byte[] get(String key) {
+        return get(key, null);
+    }
+
+    public abstract byte[] get(String key, Map<String, String> meta);
+
+    public InputStream getStream(String key) {
+        return getStream(key, null);
+    }
+
+    public abstract InputStream getStream(String key, Map<String, String> meta);
+
+    public long copy(String key, OutputStream output) {
+        return copy(key, output, null);
+    }
+
+    public long copy(String key, OutputStream output, Map<String, String> meta) {
+        long size = 0L;
+        try (InputStream input = getStream(key, meta)) {
+            int len = 0;
+            byte[] buf = new byte[65536];
+            while ((len = input.read(buf)) > 0) {
+                output.write(buf, 0, len);
+                size += len;
+            }
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+        return size;
+    }
+
     public abstract void put(String key, byte[] data);
     public abstract void delete(String key);
 
-    public abstract String publish(String key);
-    public abstract void hide(String key);
     public abstract String url(String key);
 
     public <T> T getCbor(String key, Class<T> type) {
