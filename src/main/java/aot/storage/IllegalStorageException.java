@@ -21,7 +21,7 @@ package aot.storage;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class IllegalStorageException extends StorageException {
+public class IllegalStorageException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public IllegalStorageException() {

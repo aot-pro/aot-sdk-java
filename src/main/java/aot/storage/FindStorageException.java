@@ -24,22 +24,23 @@ package aot.storage;
 public class FindStorageException extends StorageException {
     private static final long serialVersionUID = 1L;
 
-    public FindStorageException() {
+    public FindStorageException(Storage storage) {
+        super(storage);
     }
 
-    public FindStorageException(String message) {
-        super(message);
+    public FindStorageException(Storage storage, String message) {
+        super(storage, message);
     }
 
-    public FindStorageException(String message, Throwable cause) {
-        super(message, cause);
+    public FindStorageException(Storage storage, String message, Throwable cause) {
+        super(storage, message, cause);
     }
 
-    public FindStorageException(Throwable cause) {
-        super(cause);
+    public FindStorageException(Storage storage, Throwable cause) {
+        super(storage, cause);
     }
 
-    public FindStorageException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public FindStorageException(Storage storage, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(storage, message, cause, enableSuppression, writableStackTrace);
     }
 }

@@ -21,26 +21,26 @@ package aot.storage;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class ListStorageException extends StorageException {
+public class DownloadStorageException extends StorageException {
     private static final long serialVersionUID = 1L;
 
-    public ListStorageException(Storage storage) {
+    public DownloadStorageException(Storage storage) {
         super(storage);
     }
 
-    public ListStorageException(Storage storage, String message) {
+    public DownloadStorageException(Storage storage, String message) {
         super(storage, message);
     }
 
-    public ListStorageException(Storage storage, String message, Throwable cause) {
+    public DownloadStorageException(Storage storage, String message, Throwable cause) {
         super(storage, message, cause);
     }
 
-    public ListStorageException(Storage storage, Throwable cause) {
+    public DownloadStorageException(Storage storage, Throwable cause) {
         super(storage, cause);
     }
 
-    public ListStorageException(Storage storage, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public DownloadStorageException(Storage storage, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(storage, message, cause, enableSuppression, writableStackTrace);
     }
 }

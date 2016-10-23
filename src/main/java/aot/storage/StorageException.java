@@ -24,22 +24,37 @@ package aot.storage;
 public class StorageException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public StorageException() {
+    protected final String url;
+
+    public StorageException(Storage storage) {
+        this.url = storage.getUrl();
     }
 
-    public StorageException(String message) {
-        super(message);
+    public StorageException(Storage storage, String message) {
+        super(String.format("[%s]: %s", storage.getUrl(), message));
+
+        this.url = storage.getUrl();
     }
 
-    public StorageException(String message, Throwable cause) {
-        super(message, cause);
+    public StorageException(Storage storage, String message, Throwable cause) {
+        super(String.format("[%s]: %s", storage.getUrl(), message), cause);
+
+        this.url = storage.getUrl();
     }
 
-    public StorageException(Throwable cause) {
-        super(cause);
+    public StorageException(Storage storage, Throwable cause) {
+        super(String.format("[%s]: ", storage.getUrl()), cause);
+
+        this.url = storage.getUrl();
     }
 
-    public StorageException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public StorageException(Storage storage, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(String.format("[%s]: %s", storage.getUrl(), message), cause, enableSuppression, writableStackTrace);
+
+        this.url = storage.getUrl();
+    }
+
+    public String getUrl() {
+        return url;
     }
 }

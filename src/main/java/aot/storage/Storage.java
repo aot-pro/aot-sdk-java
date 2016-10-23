@@ -139,7 +139,7 @@ public abstract class Storage {
                 size += len;
             }
         } catch (IOException e) {
-            throw new StorageException(e);
+            throw new DownloadStorageException(this, e);
         }
         return size;
     }
