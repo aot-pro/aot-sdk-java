@@ -215,9 +215,9 @@ public abstract class Storage {
             String[] ids = id.split("|");
             URL url = new URL(ids[0]);
             String protocol = url.getProtocol();
-            return (Storage) Class.forName(String.format("aot.storage.%s.%sStorage", protocol, protocol.toUpperCase())).getConstructor(URL.class, String[].class).newInstance(url, ids);
+            return (Storage) Class.forName(String.format("aot.storage.%s.CustomStorage", protocol)).getConstructor(URL.class, String[].class).newInstance(url, ids);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStorageException(e);
         }
     }
 }
