@@ -29,7 +29,12 @@ import java.util.Map;
  */
 public class CustomStorage extends Storage {
     public CustomStorage(URL url, String[] ids) {
-        super(url.getHost(), url.getPath());
+        super("file", url.getHost(), url.getPath());
+    }
+
+    @Override
+    public String getHttpsUrl() {
+        return null;
     }
 
     @Override

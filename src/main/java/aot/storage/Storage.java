@@ -39,12 +39,18 @@ import java.util.regex.Pattern;
  * @since 1.0
  */
 public abstract class Storage {
+    protected final String type;
     protected final String bucket;
     protected final String prefix;
 
-    protected Storage(String bucket, String prefix) {
+    protected Storage(String type, String bucket, String prefix) {
+        this.type = type;
         this.bucket = bucket;
         this.prefix = prefix;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public String getBucket() {
@@ -54,6 +60,12 @@ public abstract class Storage {
     public String getPrefix() {
         return prefix;
     }
+
+    public String getUrl() {
+        return String.format("%s://%s/%s", type, bucket, prefix);
+    }
+
+    public abstract String getHttpsUrl();
 
     public abstract Storage getSubstorage(String prefix);
 
