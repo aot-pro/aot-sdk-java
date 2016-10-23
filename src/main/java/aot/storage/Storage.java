@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -132,21 +134,83 @@ public abstract class Storage {
         return size;
     }
 
-    public void put(String key, byte[] data) {
-        put(key, data, null);
+    public long put(String key, byte[] data) {
+        return put(key, data, null);
     }
 
-    public abstract void put(String key, byte[] data, Map<String, String> meta);
+    public abstract long put(String key, byte[] data, Map<String, String> meta);
 
-    public void upload(String key, InputStream input, long size) {
-        upload(key, input, size, null);
+    public <T> long putCbor(String key, T value) {
+        return putCbor(key, value, null);
     }
 
-    public abstract void upload(String key, InputStream input, long size, Map<String, String> meta);
+    public <T> long putCbor(String key, T value, Map<String, String> meta) {
+        byte[] data = CborUtil.toBytes(value);
+        if (meta == null) {
+            meta = new LinkedHashMap<>();
+        } else {
+            meta = new LinkedHashMap<>(meta);
+        }
+        meta.put("Content-Type", CborUtil.APPLICATION_CBOR);
+        return put(key, data, meta);
+    }
+
+    public <T> long putJobj(String key, T value) {
+        return putJobj(key, value, null);
+    }
+
+    public <T> long putJobj(String key, T value, Map<String, String> meta) {
+        byte[] data = JobjUtil.toBytes(value);
+        if (meta == null) {
+            meta = new LinkedHashMap<>();
+        } else {
+            meta = new LinkedHashMap<>(meta);
+        }
+        meta.put("Content-Type", JobjUtil.APPLICATION_JOBJ);
+        return put(key, data, meta);
+    }
+
+    public <T> long putJson(String key, T value) {
+        return putJson(key, value, null);
+    }
+
+    public <T> long putJson(String key, T value, Map<String, String> meta) {
+        byte[] data = JsonUtil.toBytes(value);
+        if (meta == null) {
+            meta = new LinkedHashMap<>();
+        } else {
+            meta = new LinkedHashMap<>(meta);
+        }
+        meta.put("Content-Type", JsonUtil.APPLICATION_JSON);
+        return put(key, data, meta);
+    }
+
+    public <T> long putXml(String key, T value) {
+        return putXml(key, value, null);
+    }
+
+    public <T> long putXml(String key, T value, Map<String, String> meta) {
+        byte[] data = XmlUtil.toBytes(value);
+        if (meta == null) {
+            meta = new LinkedHashMap<>();
+        } else {
+            meta = new LinkedHashMap<>(meta);
+        }
+        meta.put("Content-Type", XmlUtil.APPLICATION_XML);
+        return put(key, data, meta);
+    }
+
+    public long upload(String key, InputStream input, long size) {
+        return upload(key, input, size, null);
+    }
+
+    public abstract long upload(String key, InputStream input, long size, Map<String, String> meta);
 
     public abstract void delete(String key);
 
-    public abstract String url(String key);
+    public abstract String getUrl(String key);
+
+    public abstract String getHttpsUrl(String key);
 
     public static Storage createStorage(String id) {
         try {
