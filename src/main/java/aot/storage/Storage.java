@@ -39,8 +39,6 @@ import java.util.regex.Pattern;
  * @since 1.0
  */
 public abstract class Storage {
-    private static final ConcurrentHashMap<String, Holder> storages = new ConcurrentHashMap<>(4096);
-
     protected final String bucket;
     protected final String prefix;
 
@@ -220,39 +218,6 @@ public abstract class Storage {
             return (Storage) Class.forName(String.format("aot.storage.%s.%sStorage", protocol, protocol.toUpperCase())).getConstructor(URL.class, String[].class).newInstance(url, ids);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    public static Storage getStorage(String id) {
-        Holder holder = storages.get(id);
-        if (holder == null) {
-            holder = MapUtil.putIfAbsent(storages, id, new Holder(id, createStorage(id)));
-        }
-        return holder.getStorage();
-    }
-
-    private static final class Holder {
-        private final String id;
-        private final Storage storage;
-        private final AtomicLong accessTime;
-
-        public Holder(String id, Storage storage) {
-            this.id = id;
-            this.storage = storage;
-            this.accessTime = new AtomicLong(System.currentTimeMillis());
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public Storage getStorage() {
-            accessTime.set(System.currentTimeMillis());
-            return storage;
-        }
-
-        public long getAccessTime() {
-            return accessTime.get();
         }
     }
 }
