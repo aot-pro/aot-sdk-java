@@ -34,7 +34,7 @@ public class Application implements Iterable<Version>, EventSource {
     protected Application(Environment environment, String id) {
         this.environment = environment;
         this.id = id;
-        this.storage = environment.getDataStorage().substorage(String.format("/%s", id));
+        this.storage = environment.getDataStorage().getSubstorage(String.format("/%s", id));
     }
 
     public Environment getEnvironment() {

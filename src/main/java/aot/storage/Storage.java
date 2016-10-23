@@ -55,7 +55,7 @@ public abstract class Storage {
         return prefix;
     }
 
-    public abstract Storage substorage(String prefix);
+    public abstract Storage getSubstorage(String prefix);
 
     public Iterable<String> find(String prefix) {
         return find(prefix, null);
@@ -80,6 +80,38 @@ public abstract class Storage {
     }
 
     public abstract InputStream getStream(String key, Map<String, String> meta);
+
+    public <T> T getCbor(String key, Class<T> type) {
+        return getCbor(key, type, null);
+    }
+
+    public <T> T getCbor(String key, Class<T> type, Map<String, String> meta) {
+        return CborUtil.readBytes(getStream(key, meta), type);
+    }
+
+    public <T> T getJobj(String key, Class<T> type) {
+        return getJobj(key, type, null);
+    }
+
+    public <T> T getJobj(String key, Class<T> type, Map<String, String> meta) {
+        return JobjUtil.readBytes(getStream(key, meta), type);
+    }
+
+    public <T> T getJson(String key, Class<T> type) {
+        return getJson(key, type, null);
+    }
+
+    public <T> T getJson(String key, Class<T> type, Map<String, String> meta) {
+        return JsonUtil.readBytes(getStream(key, meta), type);
+    }
+
+    public <T> T getXml(String key, Class<T> type) {
+        return getXml(key, type, null);
+    }
+
+    public <T> T getXml(String key, Class<T> type, Map<String, String> meta) {
+        return XmlUtil.readBytes(getStream(key, meta), type);
+    }
 
     public long download(String key, OutputStream output) {
         return download(key, output, null);
@@ -115,22 +147,6 @@ public abstract class Storage {
     public abstract void delete(String key);
 
     public abstract String url(String key);
-
-    public <T> T getCbor(String key, Class<T> type) {
-        return CborUtil.fromBytes(get(key), type);
-    }
-
-    public <T> T getJobj(String key, Class<T> type) {
-        return JobjUtil.fromBytes(get(key), type);
-    }
-
-    public <T> T getJson(String key, Class<T> type) {
-        return JsonUtil.fromBytes(get(key), type);
-    }
-
-    public <T> T getXml(String key, Class<T> type) {
-        return XmlUtil.fromBytes(get(key), type);
-    }
 
     public static Storage createStorage(String id) {
         try {

@@ -36,7 +36,7 @@ public class Layer implements Iterable<LogFile>, EventSource {
     protected Layer(Instance instance, String id) {
         this.instance = instance;
         this.id = id;
-        this.storage = instance.getStorage().substorage(String.format("/%s", id));
+        this.storage = instance.getStorage().getSubstorage(String.format("/%s", id));
     }
 
     public Instance getInstance() {
