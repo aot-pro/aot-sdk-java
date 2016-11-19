@@ -28,7 +28,7 @@ import java.util.Map;
  * @since 1.0
  */
 public class CustomStorage extends Storage {
-    public CustomStorage(URL url, String[] ids) {
+    public CustomStorage(URL url) {
         super("file", url.getHost(), url.getPath());
     }
 
@@ -53,6 +53,11 @@ public class CustomStorage extends Storage {
     }
 
     @Override
+    public void getMeta(String key, Map<String, String> meta) {
+
+    }
+
+    @Override
     public byte[] get(String key, Map<String, String> meta) {
         return new byte[0];
     }
@@ -73,7 +78,7 @@ public class CustomStorage extends Storage {
     }
 
     @Override
-    public void delete(String key) {
+    public void remove(String key) {
 
     }
 

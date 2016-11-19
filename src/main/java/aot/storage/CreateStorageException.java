@@ -21,26 +21,26 @@ package aot.storage;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class FindStorageException extends StorageException {
+public class CreateStorageException extends StorageException {
     private static final long serialVersionUID = 1L;
 
-    public FindStorageException(String url) {
+    public CreateStorageException(String url) {
         super(url);
     }
 
-    public FindStorageException(String url, String message) {
+    public CreateStorageException(String url, String message) {
         super(url, message);
     }
 
-    public FindStorageException(String url, String message, Throwable cause) {
+    public CreateStorageException(String url, String message, Throwable cause) {
         super(url, message, cause);
     }
 
-    public FindStorageException(String url, Throwable cause) {
+    public CreateStorageException(String url, Throwable cause) {
         super(url, cause);
     }
 
-    public FindStorageException(String url, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public CreateStorageException(String url, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(url, message, cause, enableSuppression, writableStackTrace);
     }
 }

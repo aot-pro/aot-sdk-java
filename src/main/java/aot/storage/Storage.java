@@ -26,8 +26,11 @@ import aot.util.XmlUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -80,6 +83,32 @@ public abstract class Storage {
     }
 
     public abstract Iterable<String> list(String prefix, String filter);
+
+    public boolean contains(String key) {
+        for (String k : find(key)) {
+            if (key.equals(k)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean contains(Collection<String> keys) {
+        for (String key : keys) {
+            if (!contains(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Map<String, String> getMeta(String key) {
+        Map<String, String> meta = new LinkedHashMap<>(128);
+        getMeta(key, meta);
+        return meta;
+    }
+
+    public abstract void getMeta(String key, Map<String, String> meta);
 
     public byte[] get(String key) {
         return get(key, null);
@@ -139,7 +168,7 @@ public abstract class Storage {
                 size += len;
             }
         } catch (IOException e) {
-            throw new DownloadStorageException(this, e);
+            throw new DownloadStorageException(getUrl(), e);
         }
         return size;
     }
@@ -216,20 +245,25 @@ public abstract class Storage {
 
     public abstract long upload(String key, InputStream input, long size, Map<String, String> meta);
 
-    public abstract void delete(String key);
+    public abstract void remove(String key);
 
     public abstract String getUrl(String key);
 
     public abstract String getHttpsUrl(String key);
 
-    public static Storage createStorage(String id) {
+    public static Storage createStorage(String url) {
         try {
-            String[] ids = id.split("|");
-            URL url = new URL(ids[0]);
-            String protocol = url.getProtocol();
-            return (Storage) Class.forName(String.format("aot.storage.%s.CustomStorage", protocol)).getConstructor(URL.class, String[].class).newInstance(url, ids);
+            return createStorage(new URL(url));
+        } catch (MalformedURLException e) {
+            throw new CreateStorageException(url, e);
+        }
+    }
+
+    public static Storage createStorage(URL url) {
+        try {
+            return (Storage) Class.forName(String.format("aot.storage.%s.CustomStorage", url.getProtocol())).getConstructor(URL.class).newInstance(url);
         } catch (Exception e) {
-            throw new IllegalStorageException(e);
+            throw new CreateStorageException(url.toString(), e);
         }
     }
 }

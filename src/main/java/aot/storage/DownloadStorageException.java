@@ -24,23 +24,23 @@ package aot.storage;
 public class DownloadStorageException extends StorageException {
     private static final long serialVersionUID = 1L;
 
-    public DownloadStorageException(Storage storage) {
-        super(storage);
+    public DownloadStorageException(String url) {
+        super(url);
     }
 
-    public DownloadStorageException(Storage storage, String message) {
-        super(storage, message);
+    public DownloadStorageException(String url, String message) {
+        super(url, message);
     }
 
-    public DownloadStorageException(Storage storage, String message, Throwable cause) {
-        super(storage, message, cause);
+    public DownloadStorageException(String url, String message, Throwable cause) {
+        super(url, message, cause);
     }
 
-    public DownloadStorageException(Storage storage, Throwable cause) {
-        super(storage, cause);
+    public DownloadStorageException(String url, Throwable cause) {
+        super(url, cause);
     }
 
-    public DownloadStorageException(Storage storage, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(storage, message, cause, enableSuppression, writableStackTrace);
+    public DownloadStorageException(String url, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(url, message, cause, enableSuppression, writableStackTrace);
     }
 }

@@ -21,25 +21,26 @@ package aot.storage;
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class IllegalStorageException extends RuntimeException {
+public class PutStorageException extends StorageException {
     private static final long serialVersionUID = 1L;
 
-    public IllegalStorageException() {
+    public PutStorageException(String url) {
+        super(url);
     }
 
-    public IllegalStorageException(String message) {
-        super(message);
+    public PutStorageException(String url, String message) {
+        super(url, message);
     }
 
-    public IllegalStorageException(String message, Throwable cause) {
-        super(message, cause);
+    public PutStorageException(String url, String message, Throwable cause) {
+        super(url, message, cause);
     }
 
-    public IllegalStorageException(Throwable cause) {
-        super(cause);
+    public PutStorageException(String url, Throwable cause) {
+        super(url, cause);
     }
 
-    public IllegalStorageException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public PutStorageException(String url, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(url, message, cause, enableSuppression, writableStackTrace);
     }
 }

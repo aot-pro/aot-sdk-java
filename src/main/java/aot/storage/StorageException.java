@@ -26,32 +26,32 @@ public class StorageException extends RuntimeException {
 
     protected final String url;
 
-    public StorageException(Storage storage) {
-        this.url = storage.getUrl();
+    public StorageException(String url) {
+        this.url = url;
     }
 
-    public StorageException(Storage storage, String message) {
-        super(String.format("[%s]: %s", storage.getUrl(), message));
+    public StorageException(String url, String message) {
+        super(String.format("[%s]: %s", url, message));
 
-        this.url = storage.getUrl();
+        this.url = url;
     }
 
-    public StorageException(Storage storage, String message, Throwable cause) {
-        super(String.format("[%s]: %s", storage.getUrl(), message), cause);
+    public StorageException(String url, String message, Throwable cause) {
+        super(String.format("[%s]: %s", url, message), cause);
 
-        this.url = storage.getUrl();
+        this.url = url;
     }
 
-    public StorageException(Storage storage, Throwable cause) {
-        super(String.format("[%s]: ", storage.getUrl()), cause);
+    public StorageException(String url, Throwable cause) {
+        super(String.format("[%s]: ", url), cause);
 
-        this.url = storage.getUrl();
+        this.url = url;
     }
 
-    public StorageException(Storage storage, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(String.format("[%s]: %s", storage.getUrl(), message), cause, enableSuppression, writableStackTrace);
+    public StorageException(String url, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(String.format("[%s]: %s", url, message), cause, enableSuppression, writableStackTrace);
 
-        this.url = storage.getUrl();
+        this.url = url;
     }
 
     public String getUrl() {

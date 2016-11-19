@@ -24,23 +24,23 @@ package aot.storage;
 public class ListStorageException extends StorageException {
     private static final long serialVersionUID = 1L;
 
-    public ListStorageException(Storage storage) {
-        super(storage);
+    public ListStorageException(String url) {
+        super(url);
     }
 
-    public ListStorageException(Storage storage, String message) {
-        super(storage, message);
+    public ListStorageException(String url, String message) {
+        super(url, message);
     }
 
-    public ListStorageException(Storage storage, String message, Throwable cause) {
-        super(storage, message, cause);
+    public ListStorageException(String url, String message, Throwable cause) {
+        super(url, message, cause);
     }
 
-    public ListStorageException(Storage storage, Throwable cause) {
-        super(storage, cause);
+    public ListStorageException(String url, Throwable cause) {
+        super(url, cause);
     }
 
-    public ListStorageException(Storage storage, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(storage, message, cause, enableSuppression, writableStackTrace);
+    public ListStorageException(String url, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(url, message, cause, enableSuppression, writableStackTrace);
     }
 }
