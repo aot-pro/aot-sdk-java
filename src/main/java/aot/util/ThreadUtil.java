@@ -38,8 +38,11 @@ public final class ThreadUtil {
             public void run() {
                 shutdown();
                 while (threads.get() > 0L) {
+                    synchronized (sleep) {
+                        sleep.notifyAll();
+                    }
                     try {
-                        Thread.sleep(100L);
+                        Thread.sleep(50L);
                     } catch (InterruptedException e) {
                     }
                 }

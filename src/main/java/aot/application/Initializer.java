@@ -21,32 +21,14 @@ import aot.storage.Storage;
 import aot.util.ManifestUtil;
 import aot.util.NetUtil;
 
+import java.util.LinkedList;
+
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
 public class Initializer {
     public Initializer() {
-    }
-
-    public Config getBaseConfig() {
-        return null;
-    }
-
-    public Storage getConfigLocalStorage() {
-        return null;
-    }
-
-    public Storage getConfigRemoteStorage() {
-        return null;
-    }
-
-    public Storage getDataLocalStorage() {
-        return null;
-    }
-
-    public Storage getDataRemoteStorage() {
-        return null;
     }
 
     public String getApplication() {
@@ -59,5 +41,41 @@ public class Initializer {
 
     public String getInstance() {
         return NetUtil.getLocalMac();
+    }
+
+    public Storage getConfigStorage() {
+        return null;
+    }
+
+    public Storage getDataStorage() {
+        return null;
+    }
+
+    public boolean readConfigOnStart() {
+        return true;
+    }
+
+    public Config getConfig() {
+        return new Config(new Config.Log(new LinkedList<Config.Log.Layer>()), new Config.Stat());
+    }
+
+    public Config readConfig(Storage storage, String application, String version, String instance) {
+        try {
+            return storage.getJson(String.format("%s/%s/%s/config.json", application, version, instance), Config.class);
+        } catch (Exception e1) {
+            try {
+                return storage.getJson(String.format("%s/%s/config.json", application, version), Config.class);
+            } catch (Exception e2) {
+                try {
+                    return storage.getJson(String.format("%s/config.json", application), Config.class);
+                } catch (Exception e3) {
+                    try {
+                        return storage.getJson("config.json", Config.class);
+                    } catch (Exception e4) {
+                        return null;
+                    }
+                }
+            }
+        }
     }
 }
