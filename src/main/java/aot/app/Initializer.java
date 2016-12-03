@@ -21,6 +21,7 @@ import aot.storage.Storage;
 import aot.util.ManifestUtil;
 import aot.util.NetUtil;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 /**
@@ -56,7 +57,7 @@ public class Initializer {
     }
 
     public Config getConfig() {
-        return new Config(new Config.Log(new LinkedList<Config.Log.Layer>()), new Config.Stat());
+        return new Config(new Config.Log(new LinkedHashMap<String, Config.Log.Layer>()), new Config.Stat());
     }
 
     public Config readConfig(Storage storage, String application, String version, String instance) {

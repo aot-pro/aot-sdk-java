@@ -21,6 +21,7 @@ import aot.util.ThreadLock;
 import aot.util.ThreadUtil;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -28,8 +29,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 1.0
  */
 public final class Log {
-    private static final AtomicReference<Config> config = new AtomicReference<>(null);
     private static final AtomicReference<LinkedHashMap<String, Layer>> layers = new AtomicReference<>(null);
+    private static final AtomicReference<Config> config = new AtomicReference<>(null);
     private static final ThreadLocal<ThreadInfo> threadInfo = new ThreadLocal<ThreadInfo>() {
         @Override
         protected ThreadInfo initialValue() {
@@ -48,12 +49,15 @@ public final class Log {
                 try (ThreadLock tl = new ThreadLock()) {
                     while (!ThreadUtil.isShutdown()) {
                         try {
+                            LinkedHashMap<String, Layer> layers = Log.layers.get();
                             Config config = Log.config.get();
                             Config newConfig = Audit.getConfig();
                             if (newConfig != config) {
+                                LinkedHashMap<String, Layer> newLayers = new LinkedHashMap<>(layers);
+                                for (Map.Entry<String, Config.Log.Layer> layer : newConfig.log.layers.entrySet()) {
+                                }
                                 Log.config.set(newConfig);
                             }
-                            LinkedHashMap<String, Layer> layers = Log.layers.get();
                             for (Layer layer : layers.values()) {
                             }
                         } catch (Exception e) {

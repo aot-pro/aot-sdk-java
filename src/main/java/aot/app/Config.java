@@ -25,7 +25,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Dmitry Kotlyarov
@@ -65,25 +67,22 @@ public class Config implements Serializable, Binariable {
     public static class Log implements Serializable {
         private static final long serialVersionUID = 1;
 
-        public final List<Layer> layers;
+        public final Map<String, Layer> layers;
 
-        public Log(@JsonProperty(value="layers", required=false) List<Layer> layers) {
-            this.layers = Collections.unmodifiableList(layers);
+        public Log(@JsonProperty(value="layers", required=false) Map<String, Layer> layers) {
+            this.layers = Collections.unmodifiableMap(layers);
         }
 
         public static class Layer implements Serializable {
             private static final long serialVersionUID = 1;
 
-            public final String id;
             public final boolean enabled;
             public final int span;
             public final int capacity;
 
-            public Layer(@JsonProperty(value="id", required=true) String id,
-                         @JsonProperty(value="enabled", required=true) boolean enabled,
+            public Layer(@JsonProperty(value="enabled", required=true) boolean enabled,
                          @JsonProperty(value="span", required=false, defaultValue="1") int span,
                          @JsonProperty(value="capacity", required=false, defaultValue="1024") int capacity) {
-                this.id = id;
                 this.enabled = enabled;
                 this.span = span;
                 this.capacity = capacity;
