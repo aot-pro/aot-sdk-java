@@ -99,4 +99,40 @@ public final class Audit {
             throw new CreateConfigException("Config is not found");
         }
     }
+
+    public static Initializer getInitializer() {
+        return initializer;
+    }
+
+    public static String getApplication() {
+        return application;
+    }
+
+    public static String getVersion() {
+        return version;
+    }
+
+    public static String getInstance() {
+        return instance;
+    }
+
+    public static Storage getStorage() {
+        return storage;
+    }
+
+    public static Storage getConfigStorage() {
+        return configStorage;
+    }
+
+    public static boolean isReadConfigOnStart() {
+        return readConfigOnStart;
+    }
+
+    public static Config getConfig() {
+        return config.get();
+    }
+
+    public static Thread getConfigThread() {
+        return configThread;
+    }
 }

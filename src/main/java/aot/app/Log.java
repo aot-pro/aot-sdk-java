@@ -36,22 +36,34 @@ public final class Log {
             return new ThreadInfo();
         }
     };
+    private static final Thread thread;
 
     private Log() {
     }
 
     static {
-        Thread t = new Thread("aot-application-log") {
+        thread = new Thread("aot-log") {
             @Override
             public void run() {
                 try (ThreadLock tl = new ThreadLock()) {
                     while (!ThreadUtil.isShutdown()) {
+                        try {
+                            Config config = Log.config.get();
+                            Config newConfig = Audit.getConfig();
+                            if (newConfig != config) {
+                                Log.config.set(newConfig);
+                            }
+                            LinkedHashMap<String, Layer> layers = Log.layers.get();
+                            for (Layer layer : layers.values()) {
+                            }
+                        } catch (Exception e) {
+                        }
                     }
                 }
             }
         };
-        t.setDaemon(false);
-        t.start();
+        thread.setDaemon(false);
+        thread.start();
     }
 
     public static void log(String layer, String logger, String message) {

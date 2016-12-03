@@ -19,6 +19,7 @@ package aot.app;
 
 import aot.log.Buffer;
 import aot.log.BufferException;
+import aot.storage.Storage;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -65,5 +66,9 @@ final class Layer {
                 }
             }
         }
+    }
+
+    public boolean upload(Storage storage) {
+        return true;
     }
 }
