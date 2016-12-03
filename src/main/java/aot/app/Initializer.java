@@ -20,6 +20,7 @@ package aot.app;
 import aot.storage.Storage;
 import aot.util.ManifestUtil;
 import aot.util.NetUtil;
+import aot.util.PropertyUtil;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -45,11 +46,32 @@ public class Initializer {
     }
 
     public Storage getStorage() {
-        return null;
+        String url = String.format("file://%s/.aot", System.getProperty("java.io.tmpdir"));
+        String p = System.getProperty("user.home");
+        if (p != null) {
+            url = String.format("file://%s/.aot", p);
+        }
+        p = System.getProperty("catalina.base");
+        if (p != null) {
+            url = String.format("file://%s/logs/.aot", p);
+        }
+        url = PropertyUtil.getProperty("aot.storage", "AOT_STORAGE", url);
+        return Storage.createStorage(url);
     }
 
     public Storage getConfigStorage() {
-        return null;
+        String url = String.format("file://%s/.aot", System.getProperty("java.io.tmpdir"));
+        String p = System.getProperty("user.home");
+        if (p != null) {
+            url = String.format("file://%s/.aot", p);
+        }
+        p = System.getProperty("catalina.base");
+        if (p != null) {
+            url = String.format("file://%s/logs/.aot", p);
+        }
+        url = PropertyUtil.getProperty("aot.storage", "AOT_STORAGE", url);
+        url = PropertyUtil.getProperty("aot.config", "AOT_CONFIG", url);
+        return Storage.createStorage(url);
     }
 
     public boolean readConfigOnStart() {
