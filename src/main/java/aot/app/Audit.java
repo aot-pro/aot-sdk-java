@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-package aot.application;
+package aot.app;
 
 import aot.storage.Storage;
-import aot.util.NotFoundException;
 import aot.util.ThreadLock;
 import aot.util.ThreadUtil;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**

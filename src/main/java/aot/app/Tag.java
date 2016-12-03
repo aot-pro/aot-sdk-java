@@ -15,31 +15,39 @@
  * limitations under the License.
  */
 
-package aot.application;
+package aot.app;
 
-import aot.util.NotFoundException;
+import java.io.Serializable;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class EventTypeNotFoundException extends NotFoundException {
-    public EventTypeNotFoundException() {
+public class Tag implements AutoCloseable, Serializable {
+    private static final long serialVersionUID = 1;
+
+    protected final String key;
+    protected final String value;
+    protected final boolean remove;
+
+    public Tag(String key, String value) {
+        this.key = key;
+        this.value = value;
+        this.remove = Log.addTag(key, value);
     }
 
-    public EventTypeNotFoundException(String message) {
-        super(message);
+    public String getKey() {
+        return key;
     }
 
-    public EventTypeNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public String getValue() {
+        return value;
     }
 
-    public EventTypeNotFoundException(Throwable cause) {
-        super(cause);
-    }
-
-    public EventTypeNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    @Override
+    public void close() throws Exception {
+        if (remove) {
+            Log.removeTag(key);
+        }
     }
 }

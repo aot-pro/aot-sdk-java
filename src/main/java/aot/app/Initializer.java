@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot.application;
+package aot.app;
 
 import aot.storage.Storage;
 import aot.util.ManifestUtil;

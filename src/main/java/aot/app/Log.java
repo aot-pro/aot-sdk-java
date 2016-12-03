@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot.application;
+package aot.app;
 
 import aot.util.ThreadLock;
 import aot.util.ThreadUtil;

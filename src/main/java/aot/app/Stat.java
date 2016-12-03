@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package aot.application;
+package aot.app;
 
 /**
  * @author Dmitry Kotlyarov

@@ -15,31 +15,31 @@
  * limitations under the License.
  */
 
-package aot.application;
+package aot.app;
+
+import aot.util.NotFoundException;
 
 /**
  * @author Dmitry Kotlyarov
  * @since 1.0
  */
-public class ApplicationException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
-
-    public ApplicationException() {
+public class EventTypeNotFoundException extends NotFoundException {
+    public EventTypeNotFoundException() {
     }
 
-    public ApplicationException(String message) {
+    public EventTypeNotFoundException(String message) {
         super(message);
     }
 
-    public ApplicationException(String message, Throwable cause) {
+    public EventTypeNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ApplicationException(Throwable cause) {
+    public EventTypeNotFoundException(Throwable cause) {
         super(cause);
     }
 
-    public ApplicationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public EventTypeNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }
