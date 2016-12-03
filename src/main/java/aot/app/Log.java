@@ -21,6 +21,7 @@ import aot.util.ThreadLock;
 import aot.util.ThreadUtil;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -29,8 +30,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 1.0
  */
 public final class Log {
-    private static final AtomicReference<LinkedHashMap<String, Layer>> layers = new AtomicReference<>(null);
     private static final AtomicReference<Config> config = new AtomicReference<>(null);
+    private static final AtomicReference<LinkedHashMap<String, Layer>> layers = new AtomicReference<>(null);
     private static final ThreadLocal<ThreadInfo> threadInfo = new ThreadLocal<ThreadInfo>() {
         @Override
         protected ThreadInfo initialValue() {
@@ -49,16 +50,43 @@ public final class Log {
                 try (ThreadLock tl = new ThreadLock()) {
                     while (!ThreadUtil.isShutdown()) {
                         try {
-                            LinkedHashMap<String, Layer> layers = Log.layers.get();
                             Config config = Log.config.get();
                             Config newConfig = Audit.getConfig();
                             if (newConfig != config) {
+                                LinkedList<Layer> oldLayers = new LinkedList<>();
+                                LinkedHashMap<String, Layer> layers = Log.layers.get();
                                 LinkedHashMap<String, Layer> newLayers = new LinkedHashMap<>(layers);
-                                for (Map.Entry<String, Config.Log.Layer> layer : newConfig.log.layers.entrySet()) {
+                                for (Map.Entry<String, Config.Log.Layer> newConfigLayerEntry : newConfig.log.layers.entrySet()) {
+                                    String newConfigLayerId = newConfigLayerEntry.getKey();
+                                    Config.Log.Layer newConfigLayer = newConfigLayerEntry.getValue();
+                                    if (newConfigLayer.enabled) {
+                                        Layer layer = newLayers.get(newConfigLayerId);
+                                        if (layer == null) {
+                                            newLayers.put(newConfigLayerId, new Layer(newConfigLayerId, newConfigLayer));
+                                        } else {
+                                            if (!layer.compareConfig(newConfigLayer)) {
+                                                oldLayers.add(layer);
+                                                newLayers.put(newConfigLayerId, new Layer(newConfigLayerId, newConfigLayer));
+                                            }
+                                        }
+                                    }
+                                }
+                                for (Layer layer : newLayers.values().toArray(new Layer[newLayers.size()])) {
+                                    String layerId = layer.getId();
+                                    Config.Log.Layer newConfigLayer = newConfig.log.layers.get(layerId);
+                                    if (newConfigLayer == null) {
+                                        oldLayers.add(layer);
+                                        newLayers.remove(layerId);
+                                    }
                                 }
                                 Log.config.set(newConfig);
+                                Log.layers.set(newLayers);
+                                for (Layer oldLayer : oldLayers) {
+                                    oldLayer.upload(Audit.getStorage(), true);
+                                }
                             }
-                            for (Layer layer : layers.values()) {
+                            for (Layer layer : Log.layers.get().values()) {
+                                layer.upload(Audit.getStorage(), false);
                             }
                         } catch (Exception e) {
                         }

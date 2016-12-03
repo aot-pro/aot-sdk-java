@@ -31,15 +31,39 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 final class Layer {
     private final String id;
+    private final int span;
+    private final int capacity;
     private final Buffer buffer1;
     private final Buffer buffer2;
     private final AtomicBoolean bufferFlag = new AtomicBoolean(true);
     private final AtomicLong lost = new AtomicLong(0L);
 
-    public Layer(String id, int capacity) {
+    public Layer(String id, Config.Log.Layer config) {
         this.id = id;
+        this.span = config.span;
+        this.capacity = config.capacity;
         this.buffer1 = new Buffer(capacity);
         this.buffer2 = new Buffer(capacity);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public int getSpan() {
+        return span;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public long getLost() {
+        return lost.get();
+    }
+
+    public boolean compareConfig(Config.Log.Layer config) {
+        return (config.span == span) && (config.capacity == capacity);
     }
 
     public void log(String logger, short shift, long tagsRevision, Map<String, String> tags, String message) {
@@ -68,7 +92,7 @@ final class Layer {
         }
     }
 
-    public boolean upload(Storage storage) {
+    public boolean upload(Storage storage, boolean force) {
         return true;
     }
 }
