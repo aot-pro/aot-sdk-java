@@ -43,11 +43,11 @@ public class Initializer {
         return NetUtil.getLocalMac();
     }
 
-    public Storage getConfigStorage() {
+    public Storage getStorage() {
         return null;
     }
 
-    public Storage getDataStorage() {
+    public Storage getConfigStorage() {
         return null;
     }
 

@@ -35,8 +35,8 @@ public final class Audit {
     private static final String application;
     private static final String version;
     private static final String instance;
+    private static final Storage storage;
     private static final Storage configStorage;
-    private static final Storage dataStorage;
     private static final boolean readConfigOnStart;
     private static final AtomicReference<Config> config;
     private static final Thread configThread;
@@ -60,8 +60,8 @@ public final class Audit {
         application = initializer.getApplication();
         version = initializer.getVersion();
         instance = initializer.getInstance();
+        storage = initializer.getStorage();
         configStorage = initializer.getConfigStorage();
-        dataStorage = initializer.getDataStorage();
         readConfigOnStart = initializer.readConfigOnStart();
         config = new AtomicReference<>(createConfig());
         configThread = new Thread("aot-config") {
