@@ -30,20 +30,32 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 1.0
  */
 public final class Log {
-    private static final AtomicReference<Config> config = new AtomicReference<>(null);
-    private static final AtomicReference<LinkedHashMap<String, Layer>> layers = new AtomicReference<>(null);
-    private static final ThreadLocal<ThreadInfo> threadInfo = new ThreadLocal<ThreadInfo>() {
-        @Override
-        protected ThreadInfo initialValue() {
-            return new ThreadInfo();
-        }
-    };
+    private static final AtomicReference<Config> config;
+    private static final AtomicReference<LinkedHashMap<String, Layer>> layers;
+    private static final ThreadLocal<ThreadInfo> threadInfo;
     private static final Thread thread;
 
     private Log() {
     }
 
     static {
+        Config newConfig = Audit.getConfig();
+        LinkedHashMap<String, Layer> newLayers = new LinkedHashMap<>(newConfig.log.layers.size());
+        for (Map.Entry<String, Config.Log.Layer> newConfigLayerEntry : newConfig.log.layers.entrySet()) {
+            String newConfigLayerId = newConfigLayerEntry.getKey();
+            Config.Log.Layer newConfigLayer = newConfigLayerEntry.getValue();
+            if (newConfigLayer.enabled) {
+                newLayers.put(newConfigLayerId, new Layer(newConfigLayerId, newConfigLayer));
+            }
+        }
+        config = new AtomicReference<>(newConfig);
+        layers = new AtomicReference<>(newLayers);
+        threadInfo = new ThreadLocal<ThreadInfo>() {
+            @Override
+            protected ThreadInfo initialValue() {
+                return new ThreadInfo();
+            }
+        };
         thread = new Thread("aot-log") {
             @Override
             public void run() {
@@ -74,7 +86,7 @@ public final class Log {
                                 for (Layer layer : newLayers.values().toArray(new Layer[newLayers.size()])) {
                                     String layerId = layer.getId();
                                     Config.Log.Layer newConfigLayer = newConfig.log.layers.get(layerId);
-                                    if (newConfigLayer == null) {
+                                    if ((newConfigLayer == null) || !newConfigLayer.enabled) {
                                         oldLayers.add(layer);
                                         newLayers.remove(layerId);
                                     }
