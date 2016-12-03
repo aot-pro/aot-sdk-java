@@ -32,7 +32,7 @@ public final class PropertyUtil {
         if (property != null) {
             return property;
         } else {
-            throw new NotFoundException(String.format("System property '%s' is not found", key));
+            throw new PropertyNotFoundException(String.format("System property '%s' is not found", key));
         }
     }
 
@@ -41,7 +41,35 @@ public final class PropertyUtil {
         if (property != null) {
             return property;
         } else {
-            throw new NotFoundException(String.format("Environment property '%s' is not found", key));
+            throw new PropertyNotFoundException(String.format("Environment property '%s' is not found", key));
+        }
+    }
+
+    public static String getProperty(String systemKey, String environmentKey) {
+        String property = System.getProperty(systemKey);
+        if (property != null) {
+            return property;
+        } else {
+            property = System.getenv(environmentKey);
+            if (property != null) {
+                return property;
+            } else {
+                throw new PropertyNotFoundException(String.format("System property '%s' or environment property '%s' are not found", systemKey, environmentKey));
+            }
+        }
+    }
+
+    public static String getProperty(String systemKey, String environmentKey, String defaultValue) {
+        String property = System.getProperty(systemKey);
+        if (property != null) {
+            return property;
+        } else {
+            property = System.getenv(environmentKey);
+            if (property != null) {
+                return property;
+            } else {
+                return defaultValue;
+            }
         }
     }
 
@@ -50,7 +78,7 @@ public final class PropertyUtil {
         if (property != null) {
             return property;
         } else {
-            throw new NotFoundException(String.format("Property '%s' is not found", key));
+            throw new PropertyNotFoundException(String.format("Property '%s' is not found", key));
         }
     }
 
