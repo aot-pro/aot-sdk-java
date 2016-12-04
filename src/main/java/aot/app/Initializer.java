@@ -75,7 +75,7 @@ public class Initializer {
     }
 
     public boolean readConfigOnStart() {
-        return true;
+        return Boolean.valueOf(PropertyUtil.getProperty("aot.config_on_start", "AOT_CONFIG_ON_START", "true"));
     }
 
     public Config getConfig() {
