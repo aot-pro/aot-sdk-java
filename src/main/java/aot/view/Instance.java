@@ -34,7 +34,7 @@ public class Instance implements Iterable<Layer>, EventSource {
     protected Instance(Version version, String id) {
         this.version = version;
         this.id = id;
-        this.storage = version.getStorage().getSubstorage(String.format("/%s", id));
+        this.storage = version.getStorage().createSubstorage(String.format("/%s", id));
     }
 
     public Version getVersion() {

@@ -17,6 +17,7 @@
 
 package aot.test;
 
+import aot.app.Log;
 import org.junit.Test;
 
 /**
@@ -29,5 +30,6 @@ public class Test1 {
 
     @Test
     public void test() throws Exception {
+        Log.log("INFO", Test1.class.getName(), "Done!");
     }
 }

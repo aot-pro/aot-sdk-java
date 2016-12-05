@@ -34,7 +34,7 @@ public class Version implements Iterable<Instance>, EventSource {
     protected Version(Application application, String id) {
         this.application = application;
         this.id = id;
-        this.storage = application.getStorage().getSubstorage(String.format("/%s", id));
+        this.storage = application.getStorage().createSubstorage(String.format("/%s", id));
     }
 
     public Application getApplication() {

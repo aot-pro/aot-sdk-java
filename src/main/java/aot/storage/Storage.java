@@ -70,7 +70,7 @@ public abstract class Storage {
 
     public abstract String getHttpsUrl();
 
-    public abstract Storage getSubstorage(String prefix);
+    public abstract Storage createSubstorage(String prefix);
 
     public Iterable<String> find(String prefix) {
         return find(prefix, null);
@@ -167,7 +167,7 @@ public abstract class Storage {
                 output.write(buf, 0, len);
                 size += len;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new DownloadStorageException(getUrl(), e);
         }
         return size;

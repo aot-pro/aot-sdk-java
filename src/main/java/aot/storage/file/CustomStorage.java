@@ -17,10 +17,19 @@
 
 package aot.storage.file;
 
+import aot.storage.CreateSubstorageException;
+import aot.storage.GetStorageException;
+import aot.storage.PutStorageException;
 import aot.storage.Storage;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -38,8 +47,12 @@ public class CustomStorage extends Storage {
     }
 
     @Override
-    public Storage getSubstorage(String prefix) {
-        return null;
+    public Storage createSubstorage(String prefix) {
+        try {
+            return new CustomStorage(new URL(getUrl() + prefix));
+        } catch (Exception e) {
+            throw new CreateSubstorageException(getUrl(), e);
+        }
     }
 
     @Override
@@ -54,22 +67,58 @@ public class CustomStorage extends Storage {
 
     @Override
     public void getMeta(String key, Map<String, String> meta) {
-
+        try {
+            Map<String, Object> attributes = Files.readAttributes(Paths.get(String.format("%s%s", prefix, key)), "*");
+            for (Map.Entry<String, Object> e : attributes.entrySet()) {
+                String k = e.getKey();
+                Object v = e.getValue();
+                if (v instanceof String) {
+                    meta.put(k, (String) v);
+                }
+            }
+        } catch (Exception e) {
+            throw new GetStorageException(getUrl(), e);
+        }
     }
 
     @Override
     public byte[] get(String key, Map<String, String> meta) {
-        return new byte[0];
+        if (meta != null) {
+            getMeta(key, meta);
+        }
+        try {
+            return Files.readAllBytes(Paths.get(String.format("%s%s", prefix, key)));
+        } catch (Exception e) {
+            throw new GetStorageException(getUrl(), e);
+        }
     }
 
     @Override
     public InputStream getStream(String key, Map<String, String> meta) {
-        return null;
+        if (meta != null) {
+            getMeta(key, meta);
+        }
+        try {
+            return Files.newInputStream(Paths.get(String.format("%s%s", prefix, key)));
+        } catch (Exception e) {
+            throw new GetStorageException(getUrl(), e);
+        }
     }
 
     @Override
     public long put(String key, byte[] data, Map<String, String> meta) {
-        return 0;
+        try {
+            Path path = Paths.get(String.format("%s%s", prefix, key));
+            Files.write(path, data);
+            if (meta != null) {
+                for (Map.Entry<String, String> e : meta.entrySet()) {
+                    Files.setAttribute(path, e.getKey(), e.getValue());
+                }
+            }
+            return data.length;
+        } catch (Exception e) {
+            throw new PutStorageException(getUrl(), e);
+        }
     }
 
     @Override
